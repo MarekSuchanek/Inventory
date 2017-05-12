@@ -1,7 +1,21 @@
-@(message: String)
+@(things: Seq[Thing])
 
-@main("Welcome to Play") {
+@main("Thing DB test") {
 
-    @play20.welcome(message)
+    <h2>Insert thing:</h2>
+
+    <form action="/insert/thing" method="POST">
+        <input name="id" type="number" />
+        <input name="name" type="text" />
+        <input type="submit"/>
+    </form>
+
+    <h2>Previously inserted cats:</h2>
+    <table>
+        <tr><th>ID</th><th>Name</th></tr>
+        @for(c <- things){
+            <tr><td>@c.id</td><td>@c.name</td></tr>
+        }
+    </table>
 
 }
