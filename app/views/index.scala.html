@@ -1,20 +1,22 @@
-@(things: Seq[Thing])
+@(labels: Seq[Label])
 
 @main("Thing DB test") {
 
     <h2>Insert thing:</h2>
 
-    <form action="/insert/thing" method="POST">
+    <form action="/insert/label" method="POST">
         <input name="id" type="number" />
         <input name="name" type="text" />
+        <input name="description" type="text" />
+        <input name="color" type="text" />
         <input type="submit"/>
     </form>
 
     <h2>Previously inserted cats:</h2>
     <table>
-        <tr><th>ID</th><th>Name</th></tr>
-        @for(c <- things){
-            <tr><td>@c.id</td><td>@c.name</td></tr>
+        <tr><th>ID</th><th>Name</th><th>Description</th><th>Color</th></tr>
+        @for(c <- labels){
+            <tr><td>@c.id</td><td>@c.name</td><td>@c.description</td><td>@c.color</td></tr>
         }
     </table>
 

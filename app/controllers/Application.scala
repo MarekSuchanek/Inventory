@@ -1,33 +1,35 @@
 package controllers
 
-import dao.ThingDAO
+import dao.LabelDAO
 import play.api._
 import play.api.mvc._
 import javax.inject.Inject
 
-import models.Thing
+import models.Label
 import play.api.data._
 import play.api.data.Forms._
 
 import scala.concurrent.ExecutionContext
 
 class Application @Inject() (
-  thingDAO: ThingDAO
+                              labelDAO: LabelDAO
 )(implicit executionContext: ExecutionContext) extends Controller {
 
   def index = Action.async {
-    thingDAO.all().map { things => Ok(views.html.index(things)) }
+    labelDAO.all().map { labels => Ok(views.html.index(labels)) }
   }
 
   val thingForm = Form(
     mapping(
-      "id" -> longNumber,
-      "name" -> text
-    )(Thing.apply)(Thing.unapply)
+      "id" -> optional(longNumber),
+      "name" -> text,
+      "description" -> text,
+      "color" -> text
+    )(Label.apply)(Label.unapply)
   )
 
-  def insertThing = Action.async { implicit request =>
-    val thing: Thing = thingForm.bindFromRequest.get
-    thingDAO.insert(thing).map(_ => Redirect(routes.Application.index))
+  def insertLabel = Action.async { implicit request =>
+    val label: Label = thingForm.bindFromRequest.get
+    labelDAO.insert(label).map(_ => Redirect(routes.Application.index))
   }
 }
