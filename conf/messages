@@ -1,1 +1,10 @@
 basic.welcome=xxx
+basic.search=Search
+basic.scan=Scan
+basic.things=Things
+basic.labels=Labels
+basic.create=Create
+basic.inventory=Inventory
+basic.atomic_thing=Single thing
+basic.container=Container
+basic.functional_whole=Functional whole
