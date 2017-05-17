@@ -37,11 +37,12 @@ trait ThingComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
     def until = column[Timestamp]("UNTIL")
     def slot = column[String]("SLOT")
     def function = column[String]("FUNCTION")
+    def quantity = column[Int]("QUANTITY")
 
-    def * = (id.?, relationType, partId, wholeId, since, until, slot, function) <> (ThingRelation.tupled, ThingRelation.unapply)
+    def * = (id.?, relationType, partId, wholeId, since, until, slot, function.?, quantity.?) <> (ThingRelation.tupled, ThingRelation.unapply)
 
-    def part = foreignKey("PART", partId, things)(_.id)
-    def whole = foreignKey("WHOLE", wholeId, things)(_.id)
+    def part = foreignKey("PART", partId, things)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
+    def whole = foreignKey("WHOLE", wholeId, things)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
   }
 }
 

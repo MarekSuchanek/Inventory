@@ -28,6 +28,6 @@ class BarcodeDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvid
       def thingId = column[Long]("THING_ID")
       def * = (id.?, standard, code, thingId) <> (Barcode.tupled, Barcode.unapply)
 
-      def thing = foreignKey("THING", thingId, things)(_.id)
+      def thing = foreignKey("THING", thingId, things)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
     }
 }

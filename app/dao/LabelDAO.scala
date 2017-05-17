@@ -38,8 +38,8 @@ class LabelDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider
     def thingId = column[Long]("THING_ID")
     def * = (id.?, labelId, thingId) <> (LabelThing.tupled, LabelThing.unapply)
 
-    def label = foreignKey("LABEL", labelId, labels)(_.id)
-    def thing = foreignKey("THING", labelId, things)(_.id)
+    def label = foreignKey("LABEL", labelId, labels)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
+    def thing = foreignKey("THING", labelId, things)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
 
   }
 }
