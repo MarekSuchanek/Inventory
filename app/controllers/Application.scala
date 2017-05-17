@@ -3,19 +3,20 @@ package controllers
 import dao.LabelDAO
 import play.api._
 import play.api.mvc._
+import play.api.i18n.I18nSupport
 import javax.inject.Inject
 
 import models.Label
 import play.api.data._
 import play.api.data.Forms._
+import play.api.i18n.MessagesApi
 
 import scala.concurrent.ExecutionContext
 
-class Application @Inject() (
-                              labelDAO: LabelDAO
-)(implicit executionContext: ExecutionContext) extends Controller {
+class Application @Inject() (val labelDAO: LabelDAO, val messagesApi: MessagesApi)(implicit executionContext: ExecutionContext) extends Controller with I18nSupport {
 
-  def index = Action.async {
+
+  def index = Action.async { implicit request =>
     labelDAO.all().map { labels => Ok(views.html.index(labels)) }
   }
 

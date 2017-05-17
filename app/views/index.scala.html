@@ -1,6 +1,8 @@
-@(labels: Seq[Label])
+@(labels: Seq[Label])(implicit request:RequestHeader, messages: Messages, lang: Lang)
 
 @main("Thing DB test") {
+
+    <p>@Messages("basic.welcome")</p>
 
     <h2>Insert thing:</h2>
 
@@ -12,7 +14,7 @@
         <input type="submit"/>
     </form>
 
-    <h2>Previously inserted cats:</h2>
+    <h2>Previously inserted labels:</h2>
     <table>
         <tr><th>ID</th><th>Name</th><th>Description</th><th>Color</th></tr>
         @for(c <- labels){
