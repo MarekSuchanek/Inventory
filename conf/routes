@@ -2,11 +2,41 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# Home page (search gate)
 GET     /                           controllers.Application.index
 
-# Insert thing POST
-POST    /insert/label               controllers.Application.insertLabel
+# Search
+GET     /search/thing/:query        controllers.Search.thing(query: String)
+GET     /search/label/:query        controllers.Search.label(query: String)
+GET     /search/barcode/:query      controllers.Search.barcode(query: String)
+POST    /search/thing               controllers.Search.thingRedir
+POST    /search/label               controllers.Search.labelRedir
+POST    /search/barcode             controllers.Search.barcodeRedir
+
+# Things
+GET     /things                     controllers.Things.index
+POST    /things                     controllers.Things.create
+GET     /thing/:id                  controllers.Things.read(id: Long)
+PUT     /thing/:id                  controllers.Things.update(id: Long)
+DELETE  /thing/:id                  controllers.Things.delete(id: Long)
+POST    /thing/:id/label            controllers.Things.linkLabel(id: Long)
+DELETE  /thing/:id/label            controllers.Things.unlinkLabel(id: Long)
+POST    /thing/:id/part             controllers.Things.addPart(id: Long)
+DELETE  /thing/:id/part             controllers.Things.removePart(id: Long)
+
+# Things
+GET     /labels                     controllers.Labels.index
+POST    /labels                     controllers.Labels.create
+GET     /label/:id                  controllers.Labels.read(id: Long)
+PUT     /label/:id                  controllers.Labels.update(id: Long)
+DELETE  /label/:id                  controllers.Labels.delete(id: Long)
+
+# Barcodes
+GET     /barcodes                   controllers.Barcodes.index
+POST    /barcodes                   controllers.Barcodes.create
+GET     /barcode/:id                controllers.Barcodes.read(id: Long)
+PUT     /barcode/:id                controllers.Barcodes.update(id: Long)
+DELETE  /barcode/:id                controllers.Barcodes.delete(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
