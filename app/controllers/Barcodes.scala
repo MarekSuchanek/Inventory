@@ -20,6 +20,8 @@ class Barcodes @Inject()(
 
   def index = TODO
 
+  def createForm = TODO
+
   def create = TODO
 
   def read(id: Long) = TODO

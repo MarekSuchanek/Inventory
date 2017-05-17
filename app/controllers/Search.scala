@@ -20,21 +20,21 @@ class Search @Inject()(
                       (implicit executionContext: ExecutionContext)
   extends Controller with I18nSupport {
 
-  def thing(query: String) = TODO
+  def thing(query: Option[String]) = TODO
 
   def thingRedir = Action { implicit request =>
-    Redirect(routes.Search.thing(request.body.asFormUrlEncoded.get("query").head))
+    Redirect(routes.Search.thing(Some(request.body.asFormUrlEncoded.get("query").head)))
   }
 
-  def barcode(query: String) = TODO
+  def barcode(query: Option[String]) = TODO
 
   def barcodeRedir = Action { implicit request =>
-    Redirect(routes.Search.barcode(request.body.asFormUrlEncoded.get("query").head))
+    Redirect(routes.Search.barcode(Some(request.body.asFormUrlEncoded.get("query").head)))
   }
 
-  def label(query: String) = TODO
+  def label(query: Option[String]) = TODO
 
   def labelRedir = Action { implicit request =>
-    Redirect(routes.Search.label(request.body.asFormUrlEncoded.get("query").head))
+    Redirect(routes.Search.label(Some(request.body.asFormUrlEncoded.get("query").head)))
   }
 }

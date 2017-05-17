@@ -22,6 +22,8 @@ class Things @Inject()(
 
   def index = TODO
 
+  def createForm(thing_type: Option[String]) = TODO
+
   def create = TODO
 
   def read(id: Long) = TODO

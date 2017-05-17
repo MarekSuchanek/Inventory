@@ -9,29 +9,29 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="@routes.Application.index()">
                 <span class="glyphicon glyphicon-list-alt"></span> @Messages("basic.inventory")
             </a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active">
-                    <a href="#">
+                    <a href="@routes.Application.index()">
                         <span class="glyphicon glyphicon-search"></span> @Messages("basic.search")
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="@routes.Search.barcode(None)">
                         <span class="glyphicon glyphicon-barcode"></span> @Messages("basic.scan")
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="@routes.Things.index()">
                         <span class="glyphicon glyphicon-folder-open"></span> @Messages("basic.things")
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="@routes.Labels.index()">
                         <span class="glyphicon glyphicon-tags"></span> @Messages("basic.labels")
                     </a>
                 </li>
@@ -41,18 +41,24 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#">
+                            <a href="@routes.Things.createForm(Some("atomic"))">
                                 <span class="glyphicon glyphicon-hdd"></span> @Messages("basic.atomic_thing")
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="@routes.Things.createForm(Some("container"))">
                                 <span class="glyphicon glyphicon-gift"></span> @Messages("basic.container")
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="@routes.Things.createForm(Some("functional_whole"))">
                                 <span class="glyphicon glyphicon-cog"></span> @Messages("basic.functional_whole")
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="@routes.Labels.createForm()">
+                                <span class="glyphicon glyphicon-tag"></span> @Messages("basic.label")
                             </a>
                         </li>
                     </ul>

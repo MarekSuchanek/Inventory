@@ -3,6 +3,7 @@ basic.search=Search
 basic.scan=Scan
 basic.things=Things
 basic.labels=Labels
+basic.label=Label
 basic.create=Create
 basic.inventory=Inventory
 basic.atomic_thing=Single thing
