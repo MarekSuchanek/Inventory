@@ -1,10 +1,12 @@
 @(query: Option[String])(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
 
 @scripts = {
+    <script type="application/javascript" src="@routes.Assets.at("javascripts/JsBarcode.all.min.js")"></script>
     <script type="application/javascript">
             $('#btn-reset').click(function () {
                 $('#query').attr('value', '');
             });
+            JsBarcode(".barcode").init();;
     </script>
 }
 
@@ -12,7 +14,7 @@
 
     <h2>Scan barcode</h2>
 
-    @if(query.nonEmpty){
+    @if(query.nonEmpty) {
         <div class="alert alert-danger" role="alert">
             <span class="glyphicon glyphicon-exclamation-sign"></span>
             <span class="sr-only">Error:</span>
@@ -30,4 +32,25 @@
             </span>
         </div>
     </form>
+
+    <hr>
+
+    This is how barcode can look like:
+    <svg class="barcode"
+    jsbarcode-format="upc"
+    jsbarcode-value="123456789012"
+    jsbarcode-textmargin="0">
+    </svg>
+    <svg class="barcode"
+    jsbarcode-format="EAN13"
+    jsbarcode-value="123456789012"
+    jsbarcode-textmargin="0">
+    </svg>
+    <svg class="barcode"
+    jsbarcode-format="CODE39"
+    jsbarcode-value="MyBarCode"
+    jsbarcode-textmargin="0">
+    </svg>
+
+
 }
