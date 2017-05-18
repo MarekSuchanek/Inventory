@@ -6,12 +6,10 @@
 GET     /                           controllers.Application.index
 
 # Search
-GET     /search/thing               controllers.Search.thing(query: Option[String])
-GET     /search/label               controllers.Search.label(query: Option[String])
-GET     /search/barcode             controllers.Search.barcode(query: Option[String])
-POST    /search/thing               controllers.Search.thingRedir
-POST    /search/label               controllers.Search.labelRedir
-POST    /search/barcode             controllers.Search.barcodeRedir
+GET     /search                     controllers.Search.search(query: Option[String])
+POST    /search                     controllers.Search.searchRedir
+GET     /scan                       controllers.Search.barcode(query: Option[String])
+POST    /scan                       controllers.Search.barcodeRedir
 
 # Things
 GET     /things                     controllers.Things.index

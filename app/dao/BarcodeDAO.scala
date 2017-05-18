@@ -24,7 +24,7 @@ class BarcodeDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvid
 
       def id = column[Long]("BARCODE_ID", O.PrimaryKey, O.AutoInc)
       def standard = column[String]("STANDARD")
-      def code = column[String]("CODE")
+      def code = column[String]("CODE", O.Unique)
       def thingId = column[Long]("THING_ID")
       def * = (id.?, standard, code, thingId) <> (Barcode.tupled, Barcode.unapply)
 

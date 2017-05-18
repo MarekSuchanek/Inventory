@@ -6,3 +6,29 @@
 /* Bootstrap fix */
 .navbar{border-radius: 0;}
 .navbar span.glyphicon{margin-right: 0.3em;}
+
+/* Sticky footer */
+* {
+    margin: 0;
+}
+html, body {
+    height: 100%;
+}
+.page-wrap {
+    min-height: 100%;
+    /* equal to footer height */
+    margin-bottom: -3em;
+}
+.page-wrap:after {
+    content: "";
+    display: block;
+}
+.site-footer, .page-wrap:after {
+    height: 3em;
+}
+.site-footer {
+    text-align: center;
+    color: #888;
+    padding: 0.7em;
+    border-top: 1px solid #BBB;
+}

@@ -20,21 +20,31 @@ class Search @Inject()(
                       (implicit executionContext: ExecutionContext)
   extends Controller with I18nSupport {
 
-  def thing(query: Option[String]) = TODO
-
-  def thingRedir = Action { implicit request =>
-    Redirect(routes.Search.thing(Some(request.body.asFormUrlEncoded.get("query").head)))
+  def search(query: Option[String]) = Action { implicit request =>
+    query match {
+      case None => Ok(views.html.search.search(query))
+      case Some(s) => {
+        //TODO: lookup things and labels and redirect to thing if found
+        Ok(views.html.search.search(query))
+      }
+    }
   }
 
-  def barcode(query: Option[String]) = TODO
+  def searchRedir = Action { implicit request =>
+    Redirect(routes.Search.search(Some(request.body.asFormUrlEncoded.get("query").head)))
+  }
+
+  def barcode(query: Option[String]) = Action { implicit request =>
+    query match {
+      case None => Ok(views.html.search.barcode(query))
+      case Some(s) => {
+        //TODO: lookup barcode and redirect to thing if found
+        Ok(views.html.search.barcode(query))
+      }
+    }
+  }
 
   def barcodeRedir = Action { implicit request =>
     Redirect(routes.Search.barcode(Some(request.body.asFormUrlEncoded.get("query").head)))
-  }
-
-  def label(query: Option[String]) = TODO
-
-  def labelRedir = Action { implicit request =>
-    Redirect(routes.Search.label(Some(request.body.asFormUrlEncoded.get("query").head)))
   }
 }

@@ -1,4 +1,4 @@
-@(title: String, scripts: Html = Html(""))(content: Html)(implicit request:RequestHeader, messages: Messages, lang: Lang)
+@(title: String, scripts: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages: Messages, lang: Lang)
 
 <!DOCTYPE html>
 
@@ -11,15 +11,17 @@
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
     </head>
     <body>
-        <header>
+        <div class="page-wrap">
+            <header>
             @navbar()
-        </header>
+            </header>
 
-        <main class="container" id="content">
+            <main class="container" id="content">
             @content
-        </main>
+            </main>
+        </div>
 
-        <footer class="container">
+        <footer class="container sticky-footer site-footer">
             <small>Marek Suchánek &copy; 2017</small>
         </footer>
 

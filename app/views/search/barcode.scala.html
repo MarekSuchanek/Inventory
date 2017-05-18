@@ -1,0 +1,33 @@
+@(query: Option[String])(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
+
+@scripts = {
+    <script type="application/javascript">
+            $('#btn-reset').click(function () {
+                $('#query').attr('value', '');
+            });
+    </script>
+}
+
+@main("Scan barcode", scripts) {
+
+    <h2>Scan barcode</h2>
+
+    @if(query.nonEmpty){
+        <div class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+            <span class="sr-only">Error:</span>
+            This barcode is not registered in the Inventory
+        </div>
+    }
+
+    <form action="@routes.Search.barcodeRedir()" method="post">
+        <div class="input-group input-group-lg">
+            <span class="input-group-addon" id="sizing-addon1"><span class="glyphicon glyphicon-barcode"></span></span>
+            <input type="text" class="form-control" placeholder="Scan barcode" name="query" id="query" value="@query.getOrElse("")" autofocus>
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span> Search!</button>
+                <button class="btn btn-danger" type="reset" id="btn-reset"><span class="glyphicon glyphicon-remove"></span></button>
+            </span>
+        </div>
+    </form>
+}
