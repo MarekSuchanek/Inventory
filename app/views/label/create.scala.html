@@ -1,0 +1,17 @@
+@(labelForm: Form[Label])(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
+
+
+@import b3.vertical.fieldConstructor
+
+@main("Create label") {
+
+    <h2>Create new label</h2>
+
+    @b3.form(routes.Labels.create) {
+        @b3.text( labelForm("name"), '_label -> "Name")
+        @b3.color( labelForm("color"), '_label -> "Color")
+        @b3.textarea( labelForm("description"), '_label -> "Description")
+        @b3.submit('class -> "btn btn-default"){ Create }
+    }
+
+}
