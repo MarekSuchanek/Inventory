@@ -6,28 +6,27 @@
             $('#btn-reset').click(function () {
                 $('#query').attr('value', '');
             });
-            JsBarcode(".barcode").init();;
+            JsBarcode(".barcode").init();
     </script>
 }
 
-@main("Scan barcode", scripts) {
+@main(Messages("view.search.barcode_scan"), scripts) {
 
-    <h2>Scan barcode</h2>
+    <h1>@Messages("view.search.barcode_scan")</h1>
 
     @if(query.nonEmpty) {
         <div class="alert alert-danger" role="alert">
             <span class="glyphicon glyphicon-exclamation-sign"></span>
-            <span class="sr-only">Error:</span>
-            This barcode is not registered in the Inventory
+            <span class="sr-only">@Messages("basic.error"):</span> @Messages("view.search.barcode_404")
         </div>
     }
 
     <form action="@routes.Search.barcodeRedir()" method="post">
         <div class="input-group input-group-lg">
             <span class="input-group-addon" id="sizing-addon1"><span class="glyphicon glyphicon-barcode"></span></span>
-            <input type="text" class="form-control" placeholder="Scan barcode" name="query" id="query" value="@query.getOrElse("")" autofocus>
+            <input type="text" class="form-control" name="query" id="query" value="@query.getOrElse("")" autofocus>
             <span class="input-group-btn">
-                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span> Search!</button>
+                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span> @Messages("view.search.button")</button>
                 <button class="btn btn-danger" type="reset" id="btn-reset"><span class="glyphicon glyphicon-remove"></span></button>
             </span>
         </div>
@@ -35,7 +34,8 @@
 
     <hr>
 
-    This is how barcode can look like:
+    <h2>@Messages("view.search.barcode.examples")</h2>
+
     <svg class="barcode"
     jsbarcode-format="upc"
     jsbarcode-value="123456789012"

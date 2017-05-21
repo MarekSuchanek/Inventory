@@ -1,14 +1,14 @@
 @(labels: Seq[Label])(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
 
-@main("Labels") {
+@main(Messages("view.label.index.title")) {
 
-    <h2>Labels</h2>
+    <h1>@Messages("view.label.index.title")</h1>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th colspan="2">Color</th>
+                <th>@Messages("model.label.name")</th>
+                <th>@Messages("model.label.description")</th>
+                <th colspan="2">@Messages("model.label.color")</th>
             </tr>
         </thead>
         <tbody>

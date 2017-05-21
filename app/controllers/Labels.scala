@@ -1,6 +1,6 @@
 package controllers
 
-import dao.{BarcodeDAO, LabelDAO, ThingDAO}
+import dao.{LabelDAO, ThingDAO}
 import play.api._
 import play.api.mvc._
 import play.api.i18n.I18nSupport
@@ -12,7 +12,6 @@ import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.i18n.MessagesApi
 
-import scala.concurrent.duration.Duration
 import scala.concurrent.{Future, ExecutionContext}
 
 @Singleton
@@ -46,7 +45,7 @@ class Labels @Inject()(
         Future.successful(BadRequest(views.html.label.create(formWithErrors)))
       },
       label => {
-        labelDAO.insert(label).map(retId => Redirect(routes.Labels.read(retId)))
+        labelDAO.insert(label).map(retId => Redirect(routes.Labels.read(retId)).flashing("success" -> "view.label.created"))
       }
     )
   }
@@ -71,7 +70,7 @@ class Labels @Inject()(
         }
       },
       newLabel => {
-        labelDAO.update(id, newLabel).map(_ => Redirect(routes.Labels.read(id)).flashing("success" -> "Update label OK"))
+        labelDAO.update(id, newLabel).map(_ => Redirect(routes.Labels.read(id)).flashing("success" -> "view.label.updated"))
       }
     )
 
@@ -79,7 +78,7 @@ class Labels @Inject()(
 
   def delete(id: Long) = Action.async { implicit request =>
     labelDAO.delete(id).map { x: Int =>
-      if (x == 1) Redirect(routes.Labels.index()).flashing("success" -> "Label deleted")
+      if (x == 1) Redirect(routes.Labels.index()).flashing("success" -> "view.label.deleted")
       else NotFound
     }
   }

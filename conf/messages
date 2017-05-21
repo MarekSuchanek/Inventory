@@ -1,4 +1,3 @@
-basic.welcome=xxx
 basic.search=Search
 basic.scan=Scan
 basic.things=Things
@@ -9,3 +8,31 @@ basic.inventory=Inventory
 basic.atomic_thing=Single thing
 basic.container=Container
 basic.functional_whole=Functional whole
+basic.error=Error
+
+view.index.text=Simple but smart web application for management of own items. Items can be physical things stored in the basement as well as records about people or events. Model in application is flexible enough to allow capturing any type of items.
+
+view.search.placeholder=Name, label, description, ...
+view.search.button=Search!
+view.search.barcode.examples=Examples
+view.search.barcode_scan=Scan barcode
+view.search.barcode_404=This barcode is not registered in the Inventory
+
+view.label.create.title=Create new label
+view.label.index.title=Labels
+view.label.created=Label has been created
+view.label.updated=Label has been updated
+view.label.deleted=Label has been deleted
+
+view.common.form.create=Create
+view.common.form.update=Update
+view.common.form.delete=Delete
+
+view.message.close=Close
+view.message.key.success=Success
+view.message.key.danger=Error
+view.message.key.warning=Warning
+
+model.label.name=Name
+model.label.description=Description
+model.label.color=Color

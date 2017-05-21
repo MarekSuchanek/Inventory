@@ -3,8 +3,8 @@
 @if(!flash.isEmpty) {
     @for((msgKey, msgValue) <- flash.data) {
         <div class="alert alert-@msgKey" data-dismiss="alert">
-            <a title="@Messages("misc.message.close")" class="close">×</a>
-            <strong>@Messages(msgKey)</strong> @Messages(msgValue)
+            <a title="@Messages("view.message.close")" class="close">×</a>
+            <strong>@Messages("view.message.key."+msgKey)</strong> @Messages(msgValue)
         </div>
     }
 }
