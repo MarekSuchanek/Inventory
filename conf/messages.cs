@@ -1,16 +1,16 @@
 basic.search=Hledat
 basic.scan=Skenovat
-basic.things=Věci
+basic.things=Položky
 basic.labels=Štítky
 basic.label=Štítek
 basic.create=Vytvořit
 basic.inventory=Inventory
-basic.atomic_thing=Věc
+basic.atomic_thing=Položka
 basic.container=Kontejner
 basic.functional_whole=Funkční celek
 basic.error=Chyba
 
-view.index.text=Simple but smart web application for management of own items. Items can be physical things stored in the basement as well as records about people or events. Model in application is flexible enough to allow capturing any type of items.
+view.index.text=Jednoduchá ale chytrá aplikace pro správu vlastních položek. Položkou může být fyzická věc skladovaná ve sklepě, stejně jako záznam o osobě nebo události. Model v aplikaci je natolik flexibilní, že umožňuje zachycení libovolných položek.
 
 view.search.placeholder=Název, štítek, popis, ...
 view.search.button=Hledej!
