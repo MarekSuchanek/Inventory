@@ -24,7 +24,10 @@ view.label.created=Label has been created
 view.label.updated=Label has been updated
 view.label.deleted=Label has been deleted
 
-model.thing.invalid.type=Invalid item type
+view.thing.index.title=Items
+view.thing.create.atomic=Create single item
+view.thing.create.container=Create container
+view.thing.create.functional=Create functional whole
 
 view.common.form.create=Create
 view.common.form.update=Update
@@ -38,3 +41,9 @@ view.message.key.warning=Warning
 model.label.name=Name
 model.label.description=Description
 model.label.color=Color
+
+model.thing.name=Name
+model.thing.description=Description
+model.thing.since=Since
+model.thing.until=Until
+model.thing.invalid.type=Invalid item type

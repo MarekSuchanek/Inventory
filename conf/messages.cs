@@ -24,7 +24,10 @@ view.label.created=Štítek byl vytvořen
 view.label.updated=Štítek byl aktualizován
 view.label.deleted=Štítek byl odstraněn
 
-model.thing.invalid.type=Neznámý typ položky
+view.thing.index.title=Položky
+view.thing.create.atomic=Vytvořit samostatnou položku
+view.thing.create.container=Vytvořit kontejner
+view.thing.create.functional=Vytvořit funkční celek
 
 view.common.form.create=Vytvořit
 view.common.form.update=Aktualizovat
@@ -38,3 +41,9 @@ view.message.key.warning=Varování
 model.label.name=Název
 model.label.description=Popis
 model.label.color=Barva
+
+model.thing.name=Název
+model.thing.description=Popis
+model.thing.since=Od
+model.thing.until=Do
+model.thing.invalid.type=Neznámý typ položky
