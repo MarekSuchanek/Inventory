@@ -1,4 +1,4 @@
-@(title: String, scripts: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages: Messages, lang: Lang)
+@(title: String, scripts: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
 
 <!DOCTYPE html>
 
@@ -16,8 +16,13 @@
             @navbar()
             </header>
 
-            <main class="container" id="content">
-            @content
+            <main class="container">
+                <div id="flash">
+                    @flashing()
+                </div>
+                <div id="content">
+                    @content
+                </div>
             </main>
         </div>
 
