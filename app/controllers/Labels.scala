@@ -1,6 +1,6 @@
 package controllers
 
-import dao.{LabelDAO, ThingDAO}
+import dao.LabelDAO
 import play.api._
 import play.api.mvc._
 import play.api.i18n.I18nSupport
@@ -32,17 +32,17 @@ class Labels @Inject()(
   )
 
   def index = Action.async { implicit request =>
-    labelDAO.all().map { labels => Ok(views.html.label.index(labels)) }
+    labelDAO.all().map { labels => Ok(views.html.labels.index(labels)) }
   }
 
   def createForm = Action { implicit request =>
-    Ok(views.html.label.create(labelForm))
+    Ok(views.html.labels.create(labelForm))
   }
 
   def create = Action.async { implicit request =>
     labelForm.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.label.create(formWithErrors)))
+        Future.successful(BadRequest(views.html.labels.create(formWithErrors)))
       },
       label => {
         labelDAO.insert(label).map(retId => Redirect(routes.Labels.read(retId)).flashing("success" -> "view.label.created"))
@@ -53,7 +53,7 @@ class Labels @Inject()(
   def read(id: Long) = Action.async { implicit request =>
     labelDAO.findById(id).map { result: Option[Label] =>
       result match {
-        case Some(label) => Ok(views.html.label.read(label, labelForm.fill(label)))
+        case Some(label) => Ok(views.html.labels.read(label, labelForm.fill(label)))
         case None => NotFound
       }
     }
@@ -64,7 +64,7 @@ class Labels @Inject()(
       formWithErrors => {
         labelDAO.findById(id).map { result: Option[Label] =>
           result match {
-            case Some(oldLabel) => BadRequest(views.html.label.read(oldLabel, formWithErrors))
+            case Some(oldLabel) => BadRequest(views.html.labels.read(oldLabel, formWithErrors))
             case None => NotFound
           }
         }

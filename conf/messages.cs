@@ -24,6 +24,8 @@ view.label.created=Štítek byl vytvořen
 view.label.updated=Štítek byl aktualizován
 view.label.deleted=Štítek byl odstraněn
 
+model.thing.invalid.type=Neznámý typ položky
+
 view.common.form.create=Vytvořit
 view.common.form.update=Aktualizovat
 view.common.form.delete=Odstranit

@@ -1,0 +1,28 @@
+@(things: Seq[Thing])(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
+
+@main(Messages("view.thing.index.title")) {
+
+    <h1>@Messages("view.thing.index.title")</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>@Messages("model.thing.name")</th>
+                <th>@Messages("model.thing.description")</th>
+                <th>@Messages("model.thing.since")</th>
+                <th>@Messages("model.thing.until")</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(t <- things) {
+            <tr>
+                <td></td>
+                <td><a href="@routes.Things.read(t.id.getOrElse(0))">@t.name</a></td>
+                <td>@t.description</td>
+                <td>@t.since.toString("dd/MM/yyyy HH:mm")</td>
+                <td>@t.until.map(_.toString("dd/MM/yyyy HH:mm"))</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

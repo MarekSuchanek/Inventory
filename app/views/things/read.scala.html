@@ -1,0 +1,30 @@
+@(thing: Thing, thingForm: Form[Thing])(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
+
+@import helper._
+
+@import b3.vertical.fieldConstructor
+
+@main(thing.name) {
+
+    <h1>@thing.name</h1>
+
+    <p>@thing.description</p>
+
+    <p>@thing.since.toLocalDateTime.toString("dd/MM/yyyy HH:mm")</p>
+    <p>@thing.until.map(_.toString("dd/MM/yyyy HH:mm"))</p>
+
+    @b3.form(routes.Things.update(thing.id.getOrElse(0))) {
+        @b3.hidden("thingType", thing.thingType)
+        @b3.text(thingForm("name"), '_label -> Messages("model.thing.name"))
+        @b3.textarea(thingForm("description"), '_label -> Messages("model.thing.description"))
+        @b3.datetimeLocal(thingForm("since"), '_label -> Messages("model.thing.since"))
+        @b3.datetimeLocal(thingForm("until"), '_label -> Messages("model.thing.until"))
+        @b3.submit('class -> "btn btn-default") {
+            @Messages("view.common.form.update")
+        }
+    }
+
+    @form(routes.Things.delete(thing.id.getOrElse(0))) {
+        <button type="submit" class="btn btn-danger">@Messages("view.common.form.delete")</button>
+    }
+}

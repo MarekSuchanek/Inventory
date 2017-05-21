@@ -1,0 +1,21 @@
+@(thingForm: Form[Thing], thingType: String)(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
+
+
+@import b3.vertical.fieldConstructor
+
+@main(Messages("view.thing.create_atomic.title")) {
+
+    <h1>@Messages("view.thing.create_atomic.title")</h1>
+
+    @b3.form(routes.Things.create) {
+        @b3.hidden("thingType", thingType)
+        @b3.text(thingForm("name"), '_label -> Messages("model.thing.name"))
+        @b3.textarea(thingForm("description"), '_label -> Messages("model.thing.description"))
+        @b3.datetimeLocal(thingForm("since"), '_label -> Messages("model.thing.since"))
+        @b3.datetimeLocal(thingForm("until"), '_label -> Messages("model.thing.until"))
+        @b3.submit('class -> "btn btn-default") {
+            @Messages("view.common.form.create")
+        }
+    }
+
+}

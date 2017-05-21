@@ -24,6 +24,8 @@ view.label.created=Label has been created
 view.label.updated=Label has been updated
 view.label.deleted=Label has been deleted
 
+model.thing.invalid.type=Invalid item type
+
 view.common.form.create=Create
 view.common.form.update=Update
 view.common.form.delete=Delete
