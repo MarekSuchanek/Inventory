@@ -1,24 +1,28 @@
-@(labels: Seq[Label])(implicit request:RequestHeader, messages: Messages, lang: Lang)
+@()(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
 
-@main("Thing DB test") {
+    @scripts = {
+        <script type="application/javascript">
+                $('#btn-reset').click(function () {
+                    $('#query').attr('value', '');
+                });
+        </script>
+    }
 
-    <p>@Messages("basic.welcome")</p>
+    @main("Inventory", scripts) {
+        <div class="jumbotron">
+            <h1>Inventory</h1>
 
-    <h2>Insert thing:</h2>
+            <p>some text about inventory</p>
 
-    <form action="/insert/label" method="POST">
-        <input name="id" type="number" />
-        <input name="name" type="text" />
-        <input name="description" type="text" />
-        <input name="color" type="text" />
-        <input type="submit"/>
-    </form>
 
-    <h2>Previously inserted labels:</h2>
-    <table>
-        <tr><th>ID</th><th>Name</th><th>Description</th><th>Color</th></tr>
-        @for(c <- labels){
-            <tr><td>@c.id</td><td>@c.name</td><td>@c.description</td><td>@c.color</td></tr>
-        }
-    </table>
-}
+            <form action="@routes.Search.barcodeRedir()" method="post">
+                <div class="input-group input-group-lg">
+                    <input type="text" class="form-control" placeholder="Name, label, description, ..." name="query" id="query" autofocus>
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span> Search!</button>
+                    </span>
+                </div>
+            </form>
+
+        </div>
+    }

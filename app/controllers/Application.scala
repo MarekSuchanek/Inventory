@@ -22,21 +22,7 @@ class Application @Inject()(
   extends Controller with I18nSupport {
 
 
-  def index = Action.async { implicit request =>
-    labelDAO.all().map { labels => Ok(views.html.index(labels)) }
-  }
-
-  val thingForm = Form(
-    mapping(
-      "id" -> optional(longNumber),
-      "name" -> text,
-      "description" -> text,
-      "color" -> text
-    )(Label.apply)(Label.unapply)
-  )
-
-  def insertLabel = Action.async { implicit request =>
-    val label: Label = thingForm.bindFromRequest.get
-    labelDAO.insert(label).map(_ => Redirect(routes.Application.index))
+  def index = Action { implicit request =>
+    Ok(views.html.index())
   }
 }

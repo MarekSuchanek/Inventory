@@ -12,7 +12,8 @@ import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.i18n.MessagesApi
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Future, ExecutionContext}
 
 @Singleton
 class Labels @Inject()(
@@ -31,27 +32,56 @@ class Labels @Inject()(
     )(Label.apply)(Label.unapply)
   )
 
-  def index = TODO
+  def index = Action.async { implicit request =>
+    labelDAO.all().map { labels => Ok(views.html.label.index(labels)) }
+  }
 
-  def createForm =  Action { implicit request =>
+  def createForm = Action { implicit request =>
     Ok(views.html.label.create(labelForm))
   }
 
-  def create = Action { implicit request =>
+  def create = Action.async { implicit request =>
     labelForm.bindFromRequest.fold(
       formWithErrors => {
-        BadRequest(views.html.label.create(labelForm))
+        Future.successful(BadRequest(views.html.label.create(formWithErrors)))
       },
-      userData => {
-        Redirect(routes.Application.index())
+      label => {
+        labelDAO.insert(label).map(retId => Redirect(routes.Labels.read(retId)))
       }
     )
   }
 
-  def read(id: Long) = TODO
+  def read(id: Long) = Action.async { implicit request =>
+    labelDAO.findById(id).map { result: Option[Label] =>
+      result match {
+        case Some(label) => Ok(views.html.label.read(label, labelForm.fill(label)))
+        case None => NotFound
+      }
+    }
+  }
 
-  def update(id: Long) = TODO
+  def update(id: Long) = Action.async { implicit request =>
+    labelForm.bindFromRequest.fold(
+      formWithErrors => {
+        labelDAO.findById(id).map { result: Option[Label] =>
+          result match {
+            case Some(oldLabel) => BadRequest(views.html.label.read(oldLabel, formWithErrors))
+            case None => NotFound
+          }
+        }
+      },
+      newLabel => {
+        labelDAO.update(id, newLabel).map(_ => Redirect(routes.Labels.read(id)).flashing("success" -> "Update label OK"))
+      }
+    )
 
-  def delete(id: Long) = TODO
+  }
+
+  def delete(id: Long) = Action.async { implicit request =>
+    labelDAO.delete(id).map { x: Int =>
+      if (x == 1) Redirect(routes.Labels.index()).flashing("success" -> "Label deleted")
+      else NotFound
+    }
+  }
 
 }

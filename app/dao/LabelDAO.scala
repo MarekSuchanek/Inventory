@@ -18,9 +18,21 @@ class LabelDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider
 
   lazy val labels = TableQuery[LabelsTable]
 
-  def all(): Future[Seq[Label]] = db.run(labels.result)
+  def all(): Future[Seq[Label]] =
+    db.run(labels.result)
 
-  def insert(label: Label): Future[Unit] = db.run(labels += label).map { _ => () }
+  def findById(id: Long): Future[Option[Label]] =
+    db.run(labels.filter(_.id === id).result.headOption)
+
+  def insert(label: Label): Future[Long] =
+    db.run((labels returning labels.map(_.id)) += label)
+
+  def update(id: Long, label: Label): Future[Unit] =
+    db.run(labels.filter(_.id === id).update(label.copy(Some(id)))).map(_ => ())
+
+  def delete(id: Long): Future[Int] =
+    db.run(labels.filter(_.id === id).delete)
+
 
   class LabelsTable(tag: Tag) extends Table[Label](tag, "LABELS") {
 

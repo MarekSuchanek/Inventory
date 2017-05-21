@@ -1,0 +1,24 @@
+@(label: Label, labelForm: Form[Label])(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
+
+@import helper._
+
+@import b3.vertical.fieldConstructor
+
+@main("Label: " + label.name) {
+
+    <h1>@label.name</h1>
+
+    <p>@label.description</p>
+
+    @b3.form(routes.Labels.update(label.id.getOrElse(0))) {
+        @b3.text( labelForm("name"), '_label -> "Name")
+        @b3.color( labelForm("color"), '_label -> "Color")
+        @b3.textarea( labelForm("description"), '_label -> "Description")
+        @b3.submit('class -> "btn btn-primary"){ Update }
+    }
+
+    @form(routes.Labels.delete(label.id.getOrElse(0))) {
+        <button type="submit" class="btn btn-danger">Delete</button>
+    }
+
+}
