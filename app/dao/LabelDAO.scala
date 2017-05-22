@@ -39,6 +39,9 @@ class LabelDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider
   def getLinkedLabels(thingId: Long): Future[Seq[(LabelThing, Label)]] =
     db.run((labelThings join labels on (_.labelId === _.id)).filter(_._1.thingId === thingId).result)
 
+  def getLinkedThings(labelId: Long): Future[Seq[(LabelThing, Thing)]] =
+    db.run((labelThings join things on (_.thingId === _.id)).filter(_._1.labelId === labelId).result)
+
   def linkLabel(labelThing: LabelThing): Future[Long] =
     db.run((labelThings returning labelThings.map(_.id)) += labelThing)
 

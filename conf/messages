@@ -24,6 +24,9 @@ view.label.index.title=Labels
 view.label.created=Label has been created
 view.label.updated=Label has been updated
 view.label.deleted=Label has been deleted
+view.label.description=Info
+view.label.things=Items
+view.label.manage=Manage
 
 view.thing.index.title=Items
 view.thing.create.atomic=Create single item

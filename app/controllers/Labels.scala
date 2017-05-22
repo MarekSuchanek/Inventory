@@ -51,9 +51,14 @@ class Labels @Inject()(
   }
 
   def read(id: Long) = Action.async { implicit request =>
-    labelDAO.findById(id).map { result: Option[Label] =>
-      result match {
-        case Some(label) => Ok(views.html.labels.read(label, labelForm.fill(label)))
+    val data = for {
+      label <- labelDAO.findById(id)
+      linkedThings <- labelDAO.getLinkedThings(id)
+    } yield (label, linkedThings)
+
+    data.map { case (xlabel, linkedThings) =>
+      xlabel match {
+        case Some(label) => Ok(views.html.labels.read(label, labelForm.fill(label), linkedThings))
         case None => NotFound
       }
     }
@@ -62,9 +67,14 @@ class Labels @Inject()(
   def update(id: Long) = Action.async { implicit request =>
     labelForm.bindFromRequest.fold(
       formWithErrors => {
-        labelDAO.findById(id).map { result: Option[Label] =>
-          result match {
-            case Some(oldLabel) => BadRequest(views.html.labels.read(oldLabel, formWithErrors))
+        val data = for {
+          label <- labelDAO.findById(id)
+          linkedThings <- labelDAO.getLinkedThings(id)
+        } yield (label, linkedThings)
+
+        data.map { case (xlabel, linkedThings) =>
+          xlabel match {
+            case Some(oldLabel) => BadRequest(views.html.labels.read(oldLabel, formWithErrors, linkedThings))
             case None => NotFound
           }
         }

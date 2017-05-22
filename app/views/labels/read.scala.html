@@ -1,4 +1,4 @@
-@(label: Label, labelForm: Form[Label])(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
+@(label: Label, labelForm: Form[Label], things: Seq[(LabelThing, Thing)])(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
 
 @import helper._
 
@@ -8,17 +8,52 @@
 
     <h1>@label.name</h1>
 
-    <p>@label.description</p>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">@Messages("view.label.description")</a></li>
+        <li><a href="#things" role="tab" data-toggle="tab">@Messages("view.label.things")</a></li>
+        <li><a href="#manage" role="tab" data-toggle="tab">@Messages("view.label.manage")</a></li>
+    </ul>
 
-    @b3.form(routes.Labels.update(label.id.getOrElse(0))) {
-        @b3.text( labelForm("name"), '_label -> Messages("model.label.name"))
-        @b3.color( labelForm("color"), '_label -> Messages("model.label.color"))
-        @b3.textarea( labelForm("description"), '_label -> Messages("model.label.description"))
-        @b3.submit('class -> "btn btn-primary"){ @Messages("view.common.form.update") }
-    }
 
-    @form(routes.Labels.delete(label.id.getOrElse(0))) {
-        <button type="submit" class="btn btn-danger">@Messages("view.common.form.delete")</button>
-    }
+    <div class="tab-content">
+        <div class="tab-pane active" id="home">
+            <p>@label.description</p>
+        </div>
+        <div class="tab-pane" id="things">
+        @if(things.isEmpty) {
+            <div class="alert alert-info" >
+                <span class="glyphicon glyphicon-exclamation-sign"></span> @Messages("view.thing.no_barcodes")
+            </div>
+        }else {
+            <table class="table table-striped">
+                <thead>
+                    <th>@Messages("model.thing.name")</th>
+                    <th>@Messages("model.thing.description")</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                @for(thing <- things.map(_._2)) {
+                    <tr>
+                        <td><a href="@routes.Things.read(thing.id.getOrElse(0))">@thing.name</a></td>
+                        <td>@thing.description</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        </div>
+        <div class="tab-pane" id="manage">
+            @b3.form(routes.Labels.update(label.id.getOrElse(0))) {
+                @b3.text( labelForm("name"), '_label -> Messages("model.label.name"))
+                @b3.color( labelForm("color"), '_label -> Messages("model.label.color"))
+                @b3.textarea( labelForm("description"), '_label -> Messages("model.label.description"))
+                @b3.submit('class -> "btn btn-primary"){ @Messages("view.common.form.update") }
+            }
+
+            @form(routes.Labels.delete(label.id.getOrElse(0))) {
+                <button type="submit" class="btn btn-danger">@Messages("view.common.form.delete")</button>
+            }
+        </div>
+    </div>
 
 }
