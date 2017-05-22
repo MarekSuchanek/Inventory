@@ -8,7 +8,7 @@ import javax.inject.{Inject, Singleton}
 
 import play.api.i18n.MessagesApi
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{Future, ExecutionContext}
 
 @Singleton
 class Search @Inject()(
@@ -34,13 +34,14 @@ class Search @Inject()(
     Redirect(routes.Search.search(Some(request.body.asFormUrlEncoded.get("query").head)))
   }
 
-  def barcode(query: Option[String]) = Action { implicit request =>
+  def barcode(query: Option[String]) = Action.async { implicit request =>
     query match {
-      case None => Ok(views.html.search.barcode(query))
-      case Some(s) => {
-        //TODO: lookup barcode and redirect to thing if found
-        Ok(views.html.search.barcode(query))
-      }
+      case None => Future.successful(Ok(views.html.search.barcode(query)))
+      case Some(s) =>
+        barcodeDAO.findByCode(s).map {
+          case Some(barcode) => Redirect(routes.Things.read(barcode.thingId)).flashing("success" -> "view.search.barcode.found")
+          case None => Ok(views.html.search.barcode(query))
+        }
     }
   }
 

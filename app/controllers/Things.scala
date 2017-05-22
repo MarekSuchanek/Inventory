@@ -100,11 +100,9 @@ class Things @Inject()(
   def update(id: Long) = Action.async { implicit request =>
     thingForm.bindFromRequest.fold(
       formWithErrors => {
-        thingDAO.findById(id).map { result: Option[Thing] =>
-          result match {
+        thingDAO.findById(id).map {
             case Some(oldThing) => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.not_updated")
             case None => NotFound
-          }
         }
       },
       newThing => {

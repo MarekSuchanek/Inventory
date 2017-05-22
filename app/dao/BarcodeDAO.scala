@@ -11,14 +11,18 @@ import slick.jdbc.JdbcProfile
 import scala.concurrent.{ExecutionContext, Future}
 
 class BarcodeDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends ThingComponent with HasDatabaseConfigProvider[JdbcProfile] {
-    import profile.api._
+
+  import profile.api._
 
     lazy val barcodes = TableQuery[BarcodesTable]
 
     def all(): Future[Seq[Barcode]] =
       db.run(barcodes.result)
 
-    def insert(barcode: Barcode): Future[Long] =
+    def findByCode(s: String): Future[Option[Barcode]] =
+      db.run(barcodes.filter(_.code === s).result.headOption)
+
+  def insert(barcode: Barcode): Future[Long] =
       db.run((barcodes returning barcodes.map(_.id)) += barcode)
 
     def delete(id: Long): Future[Int] =
