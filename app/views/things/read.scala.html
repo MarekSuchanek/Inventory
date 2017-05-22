@@ -1,4 +1,11 @@
-@(thing: Thing, thingForm: Form[Thing])(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
+@(
+        thing: Thing,
+        thingForm: Form[Thing], linkLabelForm: Form[LabelThing],  barcodeForm: Form[Barcode],
+        labelsToAdd: Seq[Label], labels: Seq[(LabelThing,Label)], barcodes: Seq[Barcode]
+)(
+        implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash
+)
+
 
 @import helper._
 
@@ -8,23 +15,140 @@
 
     <h1>@thing.name</h1>
 
-    <p>@thing.description</p>
-
-    <p>@thing.since.toLocalDateTime.toString("dd/MM/yyyy HH:mm")</p>
-    <p>@thing.until.map(_.toString("dd/MM/yyyy HH:mm"))</p>
-
-    @b3.form(routes.Things.update(thing.id.getOrElse(0))) {
-        @b3.hidden("thingType", thing.thingType)
-        @b3.text(thingForm("name"), '_label -> Messages("model.thing.name"))
-        @b3.textarea(thingForm("description"), '_label -> Messages("model.thing.description"))
-        @b3.datetimeLocal(thingForm("since"), '_label -> Messages("model.thing.since"))
-        @b3.datetimeLocal(thingForm("until"), '_label -> Messages("model.thing.until"))
-        @b3.submit('class -> "btn btn-default") {
-            @Messages("view.common.form.update")
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">@Messages("view.thing.basic")</a></li>
+        <li><a href="#barcodes" role="tab" data-toggle="tab">@Messages("view.thing.barcodes")</a></li>
+        <li><a href="#labels" role="tab" data-toggle="tab">@Messages("view.thing.labels")</a></li>
+        @if(thing.hasParts) {
+            <li><a href="#parts" role="tab" data-toggle="tab">@Messages("view.thing.parts")</a></li>
         }
-    }
+        <li><a href="#wholes" role="tab" data-toggle="tab">@Messages("view.thing.wholes")</a></li>
+        <li><a href="#manage" role="tab" data-toggle="tab">@Messages("view.thing.manage")</a></li>
+    </ul>
 
-    @form(routes.Things.delete(thing.id.getOrElse(0))) {
-        <button type="submit" class="btn btn-danger">@Messages("view.common.form.delete")</button>
-    }
+    <div class="tab-content">
+        <div class="tab-pane active" id="home">
+            <p>@thing.description</p>
+
+            <p>@Messages("model.thing.since"): @thing.since.toLocalDateTime.toString("dd/MM/yyyy HH:mm")</p>
+            <p>@Messages("model.thing.until"): @thing.until.map(_.toString("dd/MM/yyyy HH:mm"))</p>
+        </div>
+        <div class="tab-pane" id="barcodes">
+
+            @b3.form(routes.Things.addBarcode(thing.id.getOrElse(0))) {
+                @b3.hidden("thingId", thing.id.getOrElse(0))
+                @b3.select(barcodeForm("standard"), BarcodeTypes.values.toList.map(x => (x.toString, x.toString)), '_label -> Messages("model.barcode.standard"))
+                @b3.text(barcodeForm("code"), '_label -> Messages("model.barcode.code"))
+                @b3.submit('class -> "btn btn-success") {
+                    <span class="glyphicon glyphicon-plus"></span> @Messages("view.common.form.add")
+                }
+            }
+
+            <hr>
+
+            @if(barcodes.isEmpty) {
+                <div class="alert alert-info" >
+                    <span class="glyphicon glyphicon-exclamation-sign"></span> @Messages("view.thing.no_barcodes")
+                </div>
+            }else {
+                <table class="table table-striped">
+                    <thead>
+                        <th>@Messages("model.barcode.code")</th>
+                        <th>@Messages("model.barcode.standard")</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                    @for(barcode <- barcodes) {
+                        <tr>
+                            <td>@barcode.code</td>
+                            <td>@barcode.standard</td>
+                            <td align="right">
+                            @b3.form(routes.Things.removeBarcode(thing.id.getOrElse(0))) {
+                                @b3.hidden("id", barcode.id.getOrElse(0))
+                                @b3.hidden("standard", barcode.standard)
+                                @b3.hidden("code", barcode.code)
+                                @b3.hidden("thingId", barcode.thingId)
+                                @b3.submit('class -> "btn btn-danger btn-sm") {
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                    @Messages("view.common.form.remove")
+                                }
+                            }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+
+        </div>
+        <div class="tab-pane" id="labels">
+
+            @b3.form(routes.Things.linkLabel(thing.id.getOrElse(0))) {
+                @b3.hidden("thingId", thing.id.getOrElse(0))
+                @b3.select(linkLabelForm("labelId"), labelsToAdd.filterNot(lbl => labels.map(_._2).contains(lbl)).map(lbl => (lbl.id.getOrElse(0).toString, lbl.name)), '_label -> Messages("basic.label"))
+                @b3.submit('class -> "btn btn-success") {
+                    <span class="glyphicon glyphicon-plus"></span> @Messages("view.common.form.add")
+                }
+            }
+
+            <hr>
+
+            @if(labels.isEmpty) {
+                <div class="alert alert-info" >
+                    <span class="glyphicon glyphicon-exclamation-sign"></span> @Messages("view.thing.no_labels")
+                </div>
+            }else {
+                <table class="table table-striped">
+                    <thead>
+                        <th>&nbsp;</th>
+                        <th>@Messages("model.label.name")</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                    @for((link, label) <- labels) {
+                        <tr>
+                            <td style="background-color: @label.color;">&nbsp;</td>
+                            <td><a href="@routes.Labels.read(label.id.getOrElse(0))">@label.name</a></td>
+                            <td align="right">
+                            @b3.form(routes.Things.unlinkLabel(thing.id.getOrElse(0))) {
+                                @b3.hidden("id", link.id.getOrElse(0))
+                                @b3.hidden("thingId", thing.id.getOrElse(0))
+                                @b3.hidden("labelId", label.id.getOrElse(0))
+                                @b3.submit('class -> "btn btn-danger btn-sm") {
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                    @Messages("view.common.form.remove")
+                                }
+                            }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+        </div>
+        @if(thing.hasParts) {
+            <div class="tab-pane" id="parts">
+
+            </div>
+        }
+        <div class="tab-pane" id="wholes">
+
+        </div>
+        <div class="tab-pane" id="manage">
+            @b3.form(routes.Things.update(thing.id.getOrElse(0))) {
+                @b3.hidden("thingType", thing.thingType)
+                @b3.text(thingForm("name"), '_label -> Messages("model.thing.name"))
+                @b3.textarea(thingForm("description"), '_label -> Messages("model.thing.description"))
+                @b3.datetimeLocal(thingForm("since"), '_label -> Messages("model.thing.since"))
+                @b3.datetimeLocal(thingForm("until"), '_label -> Messages("model.thing.until"))
+                @b3.submit('class -> "btn btn-default") {
+                    @Messages("view.common.form.update")
+                }
+            }
+
+            @form(routes.Things.delete(thing.id.getOrElse(0))) {
+                <button type="submit" class="btn btn-danger">@Messages("view.common.form.delete")</button>
+            }
+        </div>
+    </div>
 }

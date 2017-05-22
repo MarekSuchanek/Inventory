@@ -14,9 +14,12 @@ import slick.jdbc.JdbcProfile
 import scala.concurrent.{ExecutionContext, Future}
 
 class LabelDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends ThingComponent with HasDatabaseConfigProvider[JdbcProfile] {
+
   import profile.api._
 
   lazy val labels = TableQuery[LabelsTable]
+
+  lazy val labelThings = TableQuery[LabelThingsTable]
 
   def all(): Future[Seq[Label]] =
     db.run(labels.result)
@@ -33,6 +36,14 @@ class LabelDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider
   def delete(id: Long): Future[Int] =
     db.run(labels.filter(_.id === id).delete)
 
+  def getLinkedLabels(thingId: Long): Future[Seq[(LabelThing, Label)]] =
+    db.run((labelThings join labels on (_.labelId === _.id)).filter(_._1.thingId === thingId).result)
+
+  def linkLabel(labelThing: LabelThing): Future[Long] =
+    db.run((labelThings returning labelThings.map(_.id)) += labelThing)
+
+  def unlinkLabel(id: Long): Future[Int] =
+    db.run(labelThings.filter(_.id === id).delete)
 
   class LabelsTable(tag: Tag) extends Table[Label](tag, "LABELS") {
 

@@ -6,7 +6,7 @@ import play.api.mvc._
 import play.api.i18n.I18nSupport
 import javax.inject.{Inject, Singleton}
 
-import models.Thing
+import models.{Barcode, LabelThing, Thing}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
@@ -34,6 +34,23 @@ class Things @Inject()(
     )(Thing.apply)(Thing.unapply)
   )
 
+  val linkLabelForm = Form(
+    mapping(
+      "id" -> optional(longNumber),
+      "labelId" -> longNumber,
+      "thingId" -> longNumber
+    )(LabelThing.apply)(LabelThing.unapply)
+  )
+
+  val barcodeForm = Form(
+    mapping(
+      "id" -> optional(longNumber),
+      "standard" -> nonEmptyText,
+      "code" -> nonEmptyText, //TODO: verify unique
+      "thingId" -> longNumber
+    )(Barcode.apply)(Barcode.unapply)
+  )
+
   def index = Action.async { implicit request =>
     thingDAO.all().map { things => Ok(views.html.things.index(things)) }
   }
@@ -59,9 +76,22 @@ class Things @Inject()(
   }
 
   def read(id: Long) = Action.async { implicit request =>
-    thingDAO.findById(id).map { result: Option[Thing] =>
-      result match {
-        case Some(thing) => Ok(views.html.things.read(thing, thingForm.fill(thing)))
+    val data = for {
+      thing <- thingDAO.findById(id)
+      linkedLabels <- labelDAO.getLinkedLabels(id)
+      labelsToAdd <- labelDAO.all()
+      barcodes <- barcodeDAO.getLinkedBarcodes(id)
+    } yield (thing, labelsToAdd, linkedLabels, barcodes)
+
+    data.map { case (xthing, labelsToAdd, linkedLabels, barcodes) =>
+      xthing match {
+        case Some(thing) => Ok(
+          views.html.things.read(
+            thing,
+            thingForm.fill(thing), linkLabelForm, barcodeForm,
+            labelsToAdd, linkedLabels, barcodes
+          )
+        )
         case None => NotFound
       }
     }
@@ -72,7 +102,7 @@ class Things @Inject()(
       formWithErrors => {
         thingDAO.findById(id).map { result: Option[Thing] =>
           result match {
-            case Some(oldThing) => BadRequest(views.html.things.read(oldThing, formWithErrors))
+            case Some(oldThing) => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.not_updated")
             case None => NotFound
           }
         }
@@ -90,9 +120,49 @@ class Things @Inject()(
     }
   }
 
-  def linkLabel(id: Long) = TODO
+  def linkLabel(id: Long) = Action.async { implicit request =>
+    linkLabelForm.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(Redirect(routes.Things.read(id)).flashing("error" -> "view.thing.label.not_linked"))
+      },
+      newLabelThing => {
+        labelDAO.linkLabel(newLabelThing).map(_ => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.label.linked"))
+      }
+    )
+  }
 
-  def unlinkLabel(id: Long) = TODO
+  def unlinkLabel(id: Long) = Action.async { implicit request =>
+    linkLabelForm.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(Redirect(routes.Things.read(id)).flashing("error" -> "view.thing.label.not_unlinked"))
+      },
+      oldLabelThing => {
+        labelDAO.unlinkLabel(oldLabelThing.id.getOrElse(0)).map(_ => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.label.unlinked"))
+      }
+    )
+  }
+
+  def addBarcode(id: Long) = Action.async { implicit request =>
+    barcodeForm.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(Redirect(routes.Things.read(id)).flashing("error" -> "view.thing.barcode.not_added"))
+      },
+      newBarcode => {
+        barcodeDAO.insert(newBarcode).map(_ => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.barcode.added"))
+      }
+    )
+  }
+
+  def removeBarcode(id: Long) = Action.async { implicit request =>
+    barcodeForm.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(Redirect(routes.Things.read(id)).flashing("error" -> "view.thing.barcode.not_removed"))
+      },
+      oldBarcode => {
+        barcodeDAO.delete(oldBarcode.id.getOrElse(0)).map(_ => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.barcode.removed"))
+      }
+    )
+  }
 
   def addPart(id: Long) = TODO
 

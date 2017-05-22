@@ -3,6 +3,7 @@ package models
 import org.joda.time.DateTime
 
 trait Thing {
+
   def withId(id: Long): Thing
 
   val id: Option[Long]
@@ -12,6 +13,7 @@ trait Thing {
   val until: Option[DateTime]
 
   def thingType: String
+  def hasParts: Boolean
 }
 
 object Thing {
@@ -49,6 +51,7 @@ case class Atomic(
                  ) extends Thing {
   def withId(id: Long): Thing = copy(id = Some(id))
   def thingType = Thing.ATOMIC_TYPE
+  def hasParts = false
 }
 
 
@@ -61,6 +64,7 @@ case class Container(
                     ) extends Thing {
   def withId(id: Long): Thing = copy(id = Some(id))
   def thingType = Thing.CONTAINER_TYPE
+  def hasParts = true
 }
 
 
@@ -73,4 +77,5 @@ case class FunctionalWhole(
                           ) extends Thing {
   def withId(id: Long): Thing = copy(id = Some(id))
   def thingType = Thing.FUNCTIONAL_TYPE
+  def hasParts = true
 }

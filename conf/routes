@@ -22,6 +22,8 @@ POST    /thing/:id/label/link       controllers.Things.linkLabel(id: Long)
 POST    /thing/:id/label/unlink     controllers.Things.unlinkLabel(id: Long)
 POST    /thing/:id/part/add         controllers.Things.addPart(id: Long)
 POST    /thing/:id/part/remove      controllers.Things.removePart(id: Long)
+POST    /thing/:id/barcode/add      controllers.Things.addBarcode(id: Long)
+POST    /thing/:id/barcode/remove   controllers.Things.removeBarcode(id: Long)
 
 # Things
 GET     /labels                     controllers.Labels.index
@@ -30,14 +32,6 @@ GET     /labels/new                 controllers.Labels.createForm
 GET     /label/:id                  controllers.Labels.read(id: Long)
 POST    /label/:id/update           controllers.Labels.update(id: Long)
 POST    /label/:id/delete           controllers.Labels.delete(id: Long)
-
-# Barcodes
-GET     /barcodes                   controllers.Barcodes.index
-POST    /barcodes                   controllers.Barcodes.create
-GET     /barcodes/new               controllers.Barcodes.createForm
-GET     /barcode/:id                controllers.Barcodes.read(id: Long)
-POST    /barcode/:id/update         controllers.Barcodes.update(id: Long)
-POST    /barcode/:id/delete         controllers.Barcodes.delete(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

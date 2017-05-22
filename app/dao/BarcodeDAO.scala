@@ -4,7 +4,6 @@ import scala.concurrent.{ExecutionContext, Future}
 import javax.inject.Inject
 
 import models.Barcode
-import models.Thing
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.db.slick.HasDatabaseConfigProvider
 import slick.jdbc.JdbcProfile
@@ -14,11 +13,19 @@ import scala.concurrent.{ExecutionContext, Future}
 class BarcodeDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends ThingComponent with HasDatabaseConfigProvider[JdbcProfile] {
     import profile.api._
 
-    private val barcodes = TableQuery[BarcodesTable]
+    lazy val barcodes = TableQuery[BarcodesTable]
 
-    def all(): Future[Seq[Barcode]] = db.run(barcodes.result)
+    def all(): Future[Seq[Barcode]] =
+      db.run(barcodes.result)
 
-    def insert(barcode: Barcode): Future[Unit] = db.run(barcodes += barcode).map { _ => () }
+    def insert(barcode: Barcode): Future[Long] =
+      db.run((barcodes returning barcodes.map(_.id)) += barcode)
+
+    def delete(id: Long): Future[Int] =
+      db.run(barcodes.filter(_.id === id).delete)
+
+    def getLinkedBarcodes(thingId: Long): Future[Seq[Barcode]] =
+      db.run(barcodes.filter(_.thingId === thingId).result)
 
     class BarcodesTable(tag: Tag) extends Table[Barcode](tag, "BARCODES") {
 
