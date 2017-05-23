@@ -13,7 +13,6 @@ basic.error=Error
 basic.barcodes=Barcodes
 basic.barcode=Barcode
 
-
 view.index.text=Simple but smart web application for management of own items. Items can be physical things stored in the basement as well as records about people or events. Model in application is flexible enough to allow capturing any type of items.
 
 view.search.placeholder=Name, label, description, ...
