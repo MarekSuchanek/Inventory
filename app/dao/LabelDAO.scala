@@ -24,6 +24,9 @@ class LabelDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider
   def all(): Future[Seq[Label]] =
     db.run(labels.result)
 
+  def search(query: String): Future[Seq[Label]] =
+    db.run(labels.filter(l => (l.name like s"%$query%") || (l.description like s"%$query%")).result)
+
   def findById(id: Long): Future[Option[Label]] =
     db.run(labels.filter(_.id === id).result.headOption)
 

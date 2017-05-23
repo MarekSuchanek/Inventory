@@ -50,10 +50,14 @@ trait ThingComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
 }
 
 class ThingDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends ThingComponent with HasDatabaseConfigProvider[JdbcProfile] {
+
   import profile.api._
 
   def all(): Future[Seq[Thing]] =
     db.run(things.result)
+
+  def search(query: String): Future[Seq[Thing]] =
+    db.run(things.filter(t => (t.name like s"%$query%") || (t.description like s"%$query%")).result)
 
   def findById(id: Long): Future[Option[Thing]] =
     db.run(things.filter(_.id === id).result.headOption)

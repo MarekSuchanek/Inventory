@@ -20,13 +20,19 @@ class Search @Inject()(
                       (implicit executionContext: ExecutionContext)
   extends Controller with I18nSupport {
 
-  def search(query: Option[String]) = Action { implicit request =>
+  def search(query: Option[String]) = Action.async { implicit request =>
     query match {
-      case None => Ok(views.html.search.search(query))
-      case Some(s) => {
-        //TODO: lookup things and labels and redirect to thing if found
-        Ok(views.html.search.search(query))
-      }
+      case None => Future.successful(Ok(views.html.search.search(query)))
+      case Some(s) =>
+        lazy val data = for {
+          things <- thingDAO.search(s)
+          labels <- labelDAO.search(s)
+          barcodes <- barcodeDAO.search(s)
+        } yield (things, labels, barcodes)
+
+        data.map { case (things, labels, barcodes) =>
+          Ok(views.html.search.search(query, things, labels, barcodes))
+        }
     }
   }
 

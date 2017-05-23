@@ -19,6 +19,9 @@ class BarcodeDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvide
   def all(): Future[Seq[Barcode]] =
     db.run(barcodes.result)
 
+  def search(query: String): Future[Seq[Barcode]] =
+    db.run(barcodes.filter(_.code like s"%$query%").result)
+
   def findById(id: Long): Future[Option[Barcode]] =
     db.run(barcodes.filter(_.id === id).result.headOption)
 
