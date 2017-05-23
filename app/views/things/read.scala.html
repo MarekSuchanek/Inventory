@@ -1,5 +1,5 @@
 @(
-        thing: Thing,
+        thing: Thing, tab: Option[String],
         thingForm: Form[Thing], linkLabelForm: Form[LabelThing], barcodeForm: Form[Barcode], partForm: Form[ThingRelation],
         labelsToAdd: Seq[Label], labels: Seq[(LabelThing, Label)], barcodes: Seq[Barcode],
         parts: Seq[(ThingRelation, Thing)], wholes: Seq[(ThingRelation, Thing)], things: Seq[Thing]
@@ -17,14 +17,14 @@
     <h1>@thing.name</h1>
 
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#home" data-toggle="tab"><span class="glyphicon glyphicon-info-sign"></span> @Messages("view.thing.basic")</a></li>
-        <li><a href="#barcodes" data-toggle="tab"><span class="glyphicon glyphicon-barcode"></span> @Messages("view.thing.barcodes")</a></li>
-        <li><a href="#labels" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span> @Messages("view.thing.labels")</a></li>
+        <li @if(tab.isEmpty){class="active"}><a href="#home" data-toggle="tab"><span class="glyphicon glyphicon-info-sign"></span> @Messages("view.thing.basic")</a></li>
+        <li @if(tab.contains("barcodes")){class="active"}><a href="#barcodes" data-toggle="tab"><span class="glyphicon glyphicon-barcode"></span> @Messages("view.thing.barcodes")</a></li>
+        <li @if(tab.contains("labels")){class="active"}><a href="#labels" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span> @Messages("view.thing.labels")</a></li>
         @if(thing.hasParts) {
-            <li><a href="#parts" data-toggle="tab"><span class="glyphicon glyphicon-duplicate"></span> @Messages("view.thing.parts")</a></li>
+            <li @if(tab.contains("parts")){class="active"}><a href="#parts" data-toggle="tab"><span class="glyphicon glyphicon-duplicate"></span> @Messages("view.thing.parts")</a></li>
         }
-        <li><a href="#wholes" data-toggle="tab"><span class="glyphicon glyphicon-gift"></span> @Messages("view.thing.wholes")</a></li>
-        <li><a href="#manage" data-toggle="tab"><span class="glyphicon glyphicon-cog"></span> @Messages("view.thing.manage")</a></li>
+        <li @if(tab.contains("wholes")){class="active"}><a href="#wholes" data-toggle="tab"><span class="glyphicon glyphicon-gift"></span> @Messages("view.thing.wholes")</a></li>
+        <li @if(tab.contains("manage")){class="active"}><a href="#manage" data-toggle="tab"><span class="glyphicon glyphicon-cog"></span> @Messages("view.thing.manage")</a></li>
     </ul>
 
     <div class="tab-content">
@@ -176,7 +176,7 @@
                     @for((containment, part) <- parts) {
                         <tr>
                             <td>@containment.partId</td>
-                            <td><a href="@routes.Things.read(containment.partId)">@part.name</a></td>
+                            <td><a href="@routes.Things.read(containment.partId, Some("wholes"))">@part.name</a></td>
                             <td>@containment.since.toString("dd/MM/yyyy HH:mm")</td>
                             <td>@containment.until.map(_.toString("dd/MM/yyyy HH:mm"))</td>
                             <td>@containment.slot</td>
@@ -189,7 +189,6 @@
             </div>
         }
         @if(thing.thingType == Thing.FUNCTIONAL_TYPE) {
-
             <div class="tab-pane" id="parts">
 
                 @b3.form(routes.Things.addPart(thing.id.getOrElse(0))) {
@@ -224,7 +223,7 @@
                     @for((component, part) <- parts) {
                         <tr>
                             <td>@component.partId</td>
-                            <td><a href="@routes.Things.read(component.partId)">@part.name</a></td>
+                            <td><a href="@routes.Things.read(component.partId, Some("wholes"))">@part.name</a></td>
                             <td>@component.since.toString("dd/MM/yyyy HH:mm")</td>
                             <td>@component.until.map(_.toString("dd/MM/yyyy HH:mm"))</td>
                             <td>@component.slot</td>
@@ -264,7 +263,7 @@
                                 <span class="glyphicon glyphicon-cog"></span>
                             }
                         </td>
-                        <td><a href="@routes.Things.read(relation.wholeId)">@whole.name</a></td>
+                        <td><a href="@routes.Things.read(relation.wholeId, Some("parts"))">@whole.name</a></td>
                         <td>@relation.since.toString("dd/MM/yyyy HH:mm")</td>
                         <td>@relation.until.map(_.toString("dd/MM/yyyy HH:mm"))</td>
                         <td>@relation.slot</td>

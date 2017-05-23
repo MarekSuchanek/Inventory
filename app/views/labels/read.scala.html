@@ -34,7 +34,7 @@
                 <tbody>
                 @for(thing <- things.map(_._2)) {
                     <tr>
-                        <td><a href="@routes.Things.read(thing.id.getOrElse(0))">@thing.name</a></td>
+                        <td><a href="@routes.Things.read(thing.id.getOrElse(0), None)">@thing.name</a></td>
                         <td>@thing.description</td>
                     </tr>
                 }

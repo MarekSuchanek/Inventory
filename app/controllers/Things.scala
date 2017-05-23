@@ -84,12 +84,12 @@ class Things @Inject()(
         Future.successful(BadRequest(views.html.things.create(formWithErrors, formWithErrors.get.thingType)))
       },
       thing => {
-        thingDAO.insert(thing).map(retId => Redirect(routes.Things.read(retId)).flashing("success" -> "view.thing.created"))
+        thingDAO.insert(thing).map(retId => Redirect(routes.Things.read(retId, None)).flashing("success" -> "view.thing.created"))
       }
     )
   }
 
-  def read(id: Long) = Action.async { implicit request =>
+  def read(id: Long, tab: Option[String]) = Action.async { implicit request =>
     lazy val data = for {
       thing <- thingDAO.findById(id)
       linkedLabels <- labelDAO.getLinkedLabels(id)
@@ -104,7 +104,7 @@ class Things @Inject()(
       xthing match {
         case Some(thing) => Ok(
           views.html.things.read(
-            thing,
+            thing, tab,
             thingForm.fill(thing), linkLabelForm, barcodeForm, relationForm,
             labelsToAdd, linkedLabels, barcodes, parts, wholes, things
           )
@@ -118,12 +118,12 @@ class Things @Inject()(
     thingForm.bindFromRequest.fold(
       formWithErrors => {
         thingDAO.findById(id).map {
-            case Some(oldThing) => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.not_updated")
+            case Some(oldThing) => Redirect(routes.Things.read(id, None)).flashing("success" -> "view.thing.not_updated")
             case None => NotFound
         }
       },
       newThing => {
-        thingDAO.update(id, newThing).map(_ => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.updated"))
+        thingDAO.update(id, newThing).map(_ => Redirect(routes.Things.read(id, None)).flashing("success" -> "view.thing.updated"))
       }
     )
   }
@@ -138,10 +138,10 @@ class Things @Inject()(
   def linkLabel(id: Long) = Action.async { implicit request =>
     linkLabelForm.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(Redirect(routes.Things.read(id)).flashing("danger" -> "view.thing.label.not_linked"))
+        Future.successful(Redirect(routes.Things.read(id, Some("labels"))).flashing("danger" -> "view.thing.label.not_linked"))
       },
       newLabelThing => {
-        labelDAO.linkLabel(newLabelThing).map(_ => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.label.linked"))
+        labelDAO.linkLabel(newLabelThing).map(_ => Redirect(routes.Things.read(id, Some("labels"))).flashing("success" -> "view.thing.label.linked"))
       }
     )
   }
@@ -149,10 +149,10 @@ class Things @Inject()(
   def unlinkLabel(id: Long) = Action.async { implicit request =>
     linkLabelForm.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(Redirect(routes.Things.read(id)).flashing("danger" -> "view.thing.label.not_unlinked"))
+        Future.successful(Redirect(routes.Things.read(id, Some("labels"))).flashing("danger" -> "view.thing.label.not_unlinked"))
       },
       oldLabelThing => {
-        labelDAO.unlinkLabel(oldLabelThing.id.getOrElse(0)).map(_ => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.label.unlinked"))
+        labelDAO.unlinkLabel(oldLabelThing.id.getOrElse(0)).map(_ => Redirect(routes.Things.read(id, Some("labels"))).flashing("success" -> "view.thing.label.unlinked"))
       }
     )
   }
@@ -160,10 +160,10 @@ class Things @Inject()(
   def addBarcode(id: Long) = Action.async { implicit request =>
     barcodeForm.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(Redirect(routes.Things.read(id)).flashing("danger" -> "view.thing.barcode.not_added"))
+        Future.successful(Redirect(routes.Things.read(id, Some("barcodes"))).flashing("danger" -> "view.thing.barcode.not_added"))
       },
       newBarcode => {
-        barcodeDAO.insert(newBarcode).map(_ => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.barcode.added"))
+        barcodeDAO.insert(newBarcode).map(_ => Redirect(routes.Things.read(id, Some("barcodes"))).flashing("success" -> "view.thing.barcode.added"))
       }
     )
   }
@@ -171,10 +171,10 @@ class Things @Inject()(
   def removeBarcode(id: Long) = Action.async { implicit request =>
     barcodeForm.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(Redirect(routes.Things.read(id)).flashing("danger" -> "view.thing.barcode.not_removed"))
+        Future.successful(Redirect(routes.Things.read(id, Some("barcodes"))).flashing("danger" -> "view.thing.barcode.not_removed"))
       },
       oldBarcode => {
-        barcodeDAO.delete(oldBarcode.id.getOrElse(0)).map(_ => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.barcode.removed"))
+        barcodeDAO.delete(oldBarcode.id.getOrElse(0)).map(_ => Redirect(routes.Things.read(id, Some("barcodes"))).flashing("success" -> "view.thing.barcode.removed"))
       }
     )
   }
@@ -182,10 +182,10 @@ class Things @Inject()(
   def addPart(id: Long) = Action.async { implicit request =>
     relationForm.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(Redirect(routes.Things.read(id)).flashing("danger" -> "view.thing.part.not_added"))
+        Future.successful(Redirect(routes.Things.read(id, Some("parts"))).flashing("danger" -> "view.thing.part.not_added"))
       },
       newRelation => {
-        thingDAO.insertRelation(newRelation).map(_ => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.part.added"))
+        thingDAO.insertRelation(newRelation).map(_ => Redirect(routes.Things.read(id, Some("parts"))).flashing("success" -> "view.thing.part.added"))
       }
     )
   }
@@ -193,10 +193,10 @@ class Things @Inject()(
   def removePart(id: Long) = Action.async { implicit request =>
     relationForm.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(Redirect(routes.Things.read(id)).flashing("danger" -> "view.thing.part.not_removed"))
+        Future.successful(Redirect(routes.Things.read(id, Some("parts"))).flashing("danger" -> "view.thing.part.not_removed"))
       },
       oldRelation => {
-        thingDAO.deleteRelation(oldRelation.id.getOrElse(0)).map(_ => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.part.removed"))
+        thingDAO.deleteRelation(oldRelation.id.getOrElse(0)).map(_ => Redirect(routes.Things.read(id, Some("parts"))).flashing("success" -> "view.thing.part.removed"))
       }
     )
   }

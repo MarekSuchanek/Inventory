@@ -15,7 +15,7 @@ POST    /scan                       controllers.Search.barcodeRedir
 GET     /things                     controllers.Things.index
 GET     /things/new                 controllers.Things.createForm(thing_type: Option[String])
 POST    /things                     controllers.Things.create
-GET     /thing/:id                  controllers.Things.read(id: Long)
+GET     /thing/:id                  controllers.Things.read(id: Long, tab: Option[String])
 POST    /thing/:id/update           controllers.Things.update(id: Long)
 POST    /thing/:id/delete           controllers.Things.delete(id: Long)
 POST    /thing/:id/label/link       controllers.Things.linkLabel(id: Long)

@@ -45,7 +45,7 @@ class Search @Inject()(
       case None => Future.successful(Ok(views.html.search.barcode(query)))
       case Some(s) =>
         barcodeDAO.findByCode(s).map {
-          case Some(barcode) => Redirect(routes.Things.read(barcode.thingId)).flashing("success" -> "view.search.barcode.found")
+          case Some(barcode) => Redirect(routes.Things.read(barcode.thingId, None)).flashing("success" -> "view.search.barcode.found")
           case None => Ok(views.html.search.barcode(query))
         }
     }

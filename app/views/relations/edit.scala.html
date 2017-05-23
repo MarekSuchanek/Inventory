@@ -14,11 +14,11 @@
     <h1>@Messages("view.relation.edit")</h1>
 
     <div class="btn-group" role="group" aria-label="...">
-        <a href="@routes.Things.read(relation.wholeId)" class="btn btn-default">
+        <a href="@routes.Things.read(relation.wholeId, Some("parts"))" class="btn btn-default">
             <span class="glyphicon glyphicon-folder-open"></span>
             @Messages("view.relation.to_whole")
         </a>
-        <a href="@routes.Things.read(relation.partId)" class="btn btn-default">
+        <a href="@routes.Things.read(relation.partId, Some("wholes"))" class="btn btn-default">
             <span class="glyphicon glyphicon-file"></span>
             @Messages("view.relation.to_part")
         </a>
