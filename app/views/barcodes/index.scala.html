@@ -1,0 +1,22 @@
+@(barcodes: Seq[Barcode])(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
+
+@main(Messages("view.label.index.title")) {
+
+    <h1>@Messages("view.label.index.title")</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>@Messages("model.barcode.code")</th>
+                <th>@Messages("model.barcode.standard")</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(barcode <- barcodes) {
+            <tr>
+                <td><a href="@routes.Barcodes.read(barcode.id.getOrElse(0))">@barcode.code</a></td>
+                <td>@barcode.standard</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

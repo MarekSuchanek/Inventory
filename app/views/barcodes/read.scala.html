@@ -1,0 +1,68 @@
+@(
+        barcode: Barcode, barcodeForm: Form[Barcode]
+)(
+        implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash
+)
+
+@import helper._
+
+@import b3.vertical.fieldConstructor
+
+@scripts = {
+    <script type="application/javascript" src="@routes.Assets.at("javascripts/JsBarcode.all.min.js")"></script>
+    <script type="application/javascript">
+            JsBarcode(".barcode").init();
+    </script>
+}
+
+@main(Messages("basic.barcode") + ": " + barcode.code, scripts) {
+
+    <h1>@barcode.code</h1>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#home" data-toggle="tab"><span class="glyphicon glyphicon-info-sign"></span> @Messages("view.label.description")</a></li>
+        <li><a href="#manage" data-toggle="tab"><span class="glyphicon glyphicon-cog"></span> @Messages("view.label.manage")</a></li>
+    </ul>
+
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="home">
+            <table class="table table-striped">
+                <tr>
+                    <th>@Messages("model.barcode.code")</th>
+                    <td>@barcode.code</td>
+                </tr>
+                <tr>
+                    <th>@Messages("model.barcode.standard")</th>
+                    <td>@barcode.standard</td>
+                </tr>
+                <tr>
+                    <th>@Messages("basic.thing")</th>
+                    <td><a href="@routes.Things.read(barcode.thingId)"><span class="glyphicon glyphicon-hdd"></span></a></td>
+                </tr>
+            </table>
+
+            <center>
+                <svg class="barcode"
+                jsbarcode-format="@barcode.standard.toLowerCase"
+                jsbarcode-value="@barcode.code"></svg>
+            </center>
+        </div>
+        <div class="tab-pane" id="manage">
+            @b3.form(routes.Barcodes.update(barcode.id.getOrElse(0))) {
+                @b3.hidden("thingId", barcode.thingId)
+                @b3.select(barcodeForm("standard"), BarcodeTypes.values.toList.map(x => (x.toString, x.toString)), '_label -> Messages("model.barcode.standard"))
+                @b3.text(barcodeForm("code"), '_label -> Messages("model.barcode.code"))
+                @b3.submit('class -> "btn btn-success") {
+                    <span class="glyphicon glyphicon-edit"></span>
+                    @Messages("view.common.form.update")
+                }
+            }
+
+            @form(routes.Barcodes.delete(barcode.id.getOrElse(0))) {
+                <button type="submit" class="btn btn-danger">@Messages("view.common.form.delete")</button>
+            }
+        </div>
+    </div>
+
+}

@@ -10,35 +10,46 @@ import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class BarcodeDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends ThingComponent with HasDatabaseConfigProvider[JdbcProfile] {
+class BarcodeDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends ThingComponent with HasDatabaseConfigProvider[JdbcProfile] {
 
   import profile.api._
 
-    lazy val barcodes = TableQuery[BarcodesTable]
+  lazy val barcodes = TableQuery[BarcodesTable]
 
-    def all(): Future[Seq[Barcode]] =
-      db.run(barcodes.result)
+  def all(): Future[Seq[Barcode]] =
+    db.run(barcodes.result)
 
-    def findByCode(s: String): Future[Option[Barcode]] =
-      db.run(barcodes.filter(_.code === s).result.headOption)
+  def findById(id: Long): Future[Option[Barcode]] =
+    db.run(barcodes.filter(_.id === id).result.headOption)
+
+  def findByCode(s: String): Future[Option[Barcode]] =
+    db.run(barcodes.filter(_.code === s).result.headOption)
 
   def insert(barcode: Barcode): Future[Long] =
-      db.run((barcodes returning barcodes.map(_.id)) += barcode)
+    db.run((barcodes returning barcodes.map(_.id)) += barcode)
 
-    def delete(id: Long): Future[Int] =
-      db.run(barcodes.filter(_.id === id).delete)
+  def delete(id: Long): Future[Int] =
+    db.run(barcodes.filter(_.id === id).delete)
 
-    def getLinkedBarcodes(thingId: Long): Future[Seq[Barcode]] =
-      db.run(barcodes.filter(_.thingId === thingId).result)
+  def update(id: Long, barcode: Barcode): Future[Unit] =
+    db.run(barcodes.filter(_.id === id).update(barcode.copy(Some(id)))).map(_ => ())
 
-    class BarcodesTable(tag: Tag) extends Table[Barcode](tag, "BARCODES") {
+  def getLinkedBarcodes(thingId: Long): Future[Seq[Barcode]] =
+    db.run(barcodes.filter(_.thingId === thingId).result)
 
-      def id = column[Long]("BARCODE_ID", O.PrimaryKey, O.AutoInc)
-      def standard = column[String]("STANDARD")
-      def code = column[String]("CODE", O.Unique)
-      def thingId = column[Long]("THING_ID")
-      def * = (id.?, standard, code, thingId) <> (Barcode.tupled, Barcode.unapply)
+  class BarcodesTable(tag: Tag) extends Table[Barcode](tag, "BARCODES") {
 
-      def thing = foreignKey("THING", thingId, things)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
-    }
+    def id = column[Long]("BARCODE_ID", O.PrimaryKey, O.AutoInc)
+
+    def standard = column[String]("STANDARD")
+
+    def code = column[String]("CODE", O.Unique)
+
+    def thingId = column[Long]("THING_ID")
+
+    def * = (id.?, standard, code, thingId) <> (Barcode.tupled, Barcode.unapply)
+
+    def thing = foreignKey("THING", thingId, things)(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
+  }
+
 }
