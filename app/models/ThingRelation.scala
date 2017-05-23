@@ -10,6 +10,8 @@ trait ThingRelation {
   val since: DateTime
   val until: Option[DateTime]
   val slot: String
+
+  def relationType: String
 }
 
 object ThingRelation {
@@ -42,6 +44,7 @@ case class Component(
                       function: String
                     ) extends ThingRelation {
 
+  def relationType = ThingRelation.COMPONENT_TYPE
 }
 
 case class Containment(
@@ -54,4 +57,5 @@ case class Containment(
                         quantity: Int
                       ) extends ThingRelation {
 
+  def relationType = ThingRelation.CONTAINMENT_TYPE
 }

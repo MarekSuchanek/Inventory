@@ -1,7 +1,8 @@
 @(
         thing: Thing,
-        thingForm: Form[Thing], linkLabelForm: Form[LabelThing],  barcodeForm: Form[Barcode],
-        labelsToAdd: Seq[Label], labels: Seq[(LabelThing,Label)], barcodes: Seq[Barcode]
+        thingForm: Form[Thing], linkLabelForm: Form[LabelThing], barcodeForm: Form[Barcode], partForm: Form[ThingRelation],
+        labelsToAdd: Seq[Label], labels: Seq[(LabelThing, Label)], barcodes: Seq[Barcode],
+        parts: Seq[(ThingRelation, Thing)], wholes: Seq[(ThingRelation, Thing)], things: Seq[Thing]
 )(
         implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash
 )
@@ -28,6 +29,17 @@
 
     <div class="tab-content">
         <div class="tab-pane active" id="home">
+
+            @if(thing.thingType == Thing.CONTAINER_TYPE) {
+                <p>@Messages("basic.container") #@thing.id</p>
+            }
+            @if(thing.thingType == Thing.FUNCTIONAL_TYPE) {
+                <p>@Messages("basic.functional_whole") #@thing.id</p>
+            }
+            @if(thing.thingType == Thing.ATOMIC_TYPE) {
+                <p>@Messages("basic.atomic_thing") #@thing.id</p>
+            }
+
             <p>@thing.description</p>
 
             <p>@Messages("model.thing.since"): @thing.since.toLocalDateTime.toString("dd/MM/yyyy HH:mm")</p>
@@ -40,7 +52,8 @@
                 @b3.select(barcodeForm("standard"), BarcodeTypes.values.toList.map(x => (x.toString, x.toString)), '_label -> Messages("model.barcode.standard"))
                 @b3.text(barcodeForm("code"), '_label -> Messages("model.barcode.code"))
                 @b3.submit('class -> "btn btn-success") {
-                    <span class="glyphicon glyphicon-plus"></span> @Messages("view.common.form.add")
+                    <span class="glyphicon glyphicon-plus"></span>
+                    @Messages("view.common.form.add")
                 }
             }
 
@@ -50,7 +63,7 @@
                 <div class="alert alert-info" >
                     <span class="glyphicon glyphicon-exclamation-sign"></span> @Messages("view.thing.no_barcodes")
                 </div>
-            }else {
+            } else {
                 <table class="table table-striped">
                     <thead>
                         <th>@Messages("model.barcode.code")</th>
@@ -87,7 +100,8 @@
                 @b3.hidden("thingId", thing.id.getOrElse(0))
                 @b3.select(linkLabelForm("labelId"), labelsToAdd.filterNot(lbl => labels.map(_._2).contains(lbl)).map(lbl => (lbl.id.getOrElse(0).toString, lbl.name)), '_label -> Messages("basic.label"))
                 @b3.submit('class -> "btn btn-success") {
-                    <span class="glyphicon glyphicon-plus"></span> @Messages("view.common.form.add")
+                    <span class="glyphicon glyphicon-plus"></span>
+                    @Messages("view.common.form.add")
                 }
             }
 
@@ -97,7 +111,7 @@
                 <div class="alert alert-info" >
                     <span class="glyphicon glyphicon-exclamation-sign"></span> @Messages("view.thing.no_labels")
                 </div>
-            }else {
+            } else {
                 <table class="table table-striped">
                     <thead>
                         <th>&nbsp;</th>
@@ -107,7 +121,8 @@
                     <tbody>
                     @for((link, label) <- labels) {
                         <tr>
-                            <td style="background-color: @label.color;">&nbsp;</td>
+                            <td style="background-color:
+                            @label.color;">&nbsp;</td>
                             <td><a href="@routes.Labels.read(label.id.getOrElse(0))">@label.name</a></td>
                             <td align="right">
                             @b3.form(routes.Things.unlinkLabel(thing.id.getOrElse(0))) {
@@ -126,13 +141,134 @@
                 </table>
             }
         </div>
-        @if(thing.hasParts) {
+        @if(thing.thingType == Thing.CONTAINER_TYPE) {
             <div class="tab-pane" id="parts">
 
+                @b3.form(routes.Things.addPart(thing.id.getOrElse(0))) {
+                    @b3.hidden("relationType", ThingRelation.CONTAINMENT_TYPE)
+                    @b3.hidden("wholeId", thing.id.getOrElse(0))
+                    @b3.select(partForm("partId"), things.filterNot(t => t.id == thing.id).map(t => (t.id.getOrElse(0).toString, t.name + " #"+t.id.getOrElse(0))), '_label -> Messages("model.relation.part"))
+                    @b3.datetimeLocal(thingForm("since"), '_label -> Messages("model.relation.since"))
+                    @b3.datetimeLocal(thingForm("until"), '_label -> Messages("model.relation.until"))
+                    @b3.text(thingForm("slot"), '_label -> Messages("model.relation.slot"))
+                    @b3.number(partForm("quantity"), '_label -> Messages("model.containment.quantity"), 'min -> "1", '_value -> "1")
+                    @b3.submit('class -> "btn btn-success") {
+                        <span class="glyphicon glyphicon-plus"></span>
+                        @Messages("view.common.form.add")
+                    }
+                }
+
+                <hr>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>@Messages("model.thing.name")</th>
+                            <th>@Messages("model.relation.since")</th>
+                            <th>@Messages("model.relation.until")</th>
+                            <th>@Messages("model.relation.slot")</th>
+                            <th>@Messages("model.containment.quantity")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for((containment, part) <- parts) {
+                        <tr>
+                            <td>@containment.partId</td>
+                            <td><a href="@routes.Things.read(containment.partId)">@part.name</a></td>
+                            <td>@containment.since.toString("dd/MM/yyyy HH:mm")</td>
+                            <td>@containment.until.map(_.toString("dd/MM/yyyy HH:mm"))</td>
+                            <td>@containment.slot</td>
+                            <td>@containment.asInstanceOf[Containment].quantity</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        @if(thing.thingType == Thing.FUNCTIONAL_TYPE) {
+
+            <div class="tab-pane" id="parts">
+
+                @b3.form(routes.Things.addPart(thing.id.getOrElse(0))) {
+                    @b3.hidden("wholeId", thing.id.getOrElse(0))
+                    @b3.hidden("relationType", ThingRelation.COMPONENT_TYPE)
+                    @b3.number(partForm("partId"), '_label -> Messages("model.relation.part"))
+                    @b3.datetimeLocal(thingForm("since"), '_label -> Messages("model.relation.since"))
+                    @b3.datetimeLocal(thingForm("until"), '_label -> Messages("model.relation.until"))
+                    @b3.text(thingForm("slot"), '_label -> Messages("model.relation.slot"))
+                    @b3.text(partForm("function"), '_label -> Messages("model.containment.function"))
+                    @b3.submit('class -> "btn btn-success") {
+                        <span class="glyphicon glyphicon-plus"></span>
+                        @Messages("view.common.form.add")
+                    }
+                }
+
+                <hr>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>@Messages("model.thing.name")</th>
+                            <th>@Messages("model.relation.since")</th>
+                            <th>@Messages("model.relation.until")</th>
+                            <th>@Messages("model.relation.slot")</th>
+                            <th>@Messages("model.component.function")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for((component, part) <- parts) {
+                        <tr>
+                            <td>@component.partId</td>
+                            <td><a href="@routes.Things.read(component.partId)">@part.name</a></td>
+                            <td>@component.since.toString("dd/MM/yyyy HH:mm")</td>
+                            <td>@component.until.map(_.toString("dd/MM/yyyy HH:mm"))</td>
+                            <td>@component.slot</td>
+                            <td>@component.asInstanceOf[Component].function</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
             </div>
         }
         <div class="tab-pane" id="wholes">
 
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>@Messages("model.relation.type")</th>
+                        <th>@Messages("model.thing.name")</th>
+                        <th>@Messages("model.relation.since")</th>
+                        <th>@Messages("model.relation.until")</th>
+                        <th>@Messages("model.relation.slot")</th>
+                        <th>@Messages("model.containment.quantity")</th>
+                        <th>@Messages("model.component.function")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for((relation, part) <- wholes) {
+                    <tr>
+                        <td>@relation.partId</td>
+                        <td>
+                            @if(relation.relationType == ThingRelation.CONTAINMENT_TYPE) {
+                                <span class="glyphicon glyphicon-gift"></span>
+                            }
+                            @if(relation.relationType == ThingRelation.COMPONENT_TYPE) {
+                                <span class="glyphicon glyphicon-cog"></span>
+                            }
+                        </td>
+                        <td><a href="@routes.Things.read(relation.partId)">@part.name</a></td>
+                        <td>@relation.since.toString("dd/MM/yyyy HH:mm")</td>
+                        <td>@relation.until.map(_.toString("dd/MM/yyyy HH:mm"))</td>
+                        <td>@relation.slot</td>
+                        <td>@relation.asInstanceOf[Containment].quantity</td>
+                        <td>@relation.asInstanceOf[Component].function</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
         </div>
         <div class="tab-pane" id="manage">
             @b3.form(routes.Things.update(thing.id.getOrElse(0))) {

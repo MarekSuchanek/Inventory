@@ -16,6 +16,7 @@ trait ThingComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
   import profile.api._
 
   lazy val things = TableQuery[ThingsTable]
+  lazy val relations = TableQuery[ThingRelationsTable]
 
   class ThingsTable(tag: Tag) extends Table[Thing](tag, "THINGS") {
 
@@ -66,4 +67,15 @@ class ThingDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider
   def delete(id: Long): Future[Int] =
     db.run(things.filter(_.id === id).delete)
 
+  def getWholes(id: Long): Future[Seq[(ThingRelation, Thing)]] =
+    db.run((relations join things on (_.wholeId === _.id)).filter(_._1.partId === id).result)
+
+  def getParts(id: Long): Future[Seq[(ThingRelation, Thing)]] =
+    db.run((relations join things on (_.partId === _.id)).filter(_._1.wholeId === id).result)
+
+  def insertRelation(relation: ThingRelation): Future[Long] =
+    db.run((relations returning relations.map(_.id)) += relation)
+
+  def deleteRelation(id: Long): Future[Int] =
+    db.run(relations.filter(_.id === id).delete)
 }

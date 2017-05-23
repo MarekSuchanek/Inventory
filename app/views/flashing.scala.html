@@ -4,7 +4,7 @@
     @for((msgKey, msgValue) <- flash.data) {
         <div class="alert alert-@msgKey" data-dismiss="alert">
             <a title="@Messages("view.message.close")" class="close">×</a>
-            <strong>@Messages("view.message.key."+msgKey)</strong> @Messages(msgValue)
+            <strong>@Messages("view.message.key."+msgKey)</strong>: @Messages(msgValue)
         </div>
     }
 }

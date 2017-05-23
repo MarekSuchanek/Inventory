@@ -6,7 +6,7 @@ import play.api.mvc._
 import play.api.i18n.I18nSupport
 import javax.inject.{Inject, Singleton}
 
-import models.{Barcode, LabelThing, Thing}
+import models.{Barcode, LabelThing, Thing, ThingRelation}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.MessagesApi
@@ -51,6 +51,20 @@ class Things @Inject()(
     )(Barcode.apply)(Barcode.unapply)
   )
 
+  val relationForm = Form(
+    mapping(
+      "id" -> optional(longNumber),
+      "relationType" -> nonEmptyText.verifying("model.relation.invalid.type", Thing.TYPES.contains(_)),
+      "partId" -> longNumber,
+      "wholeId" -> longNumber,
+      "since" -> jodaDate("yyyy-MM-dd'T'HH:mm"),
+      "until" -> optional(jodaDate("yyyy-MM-dd'T'HH:mm")),
+      "slot" -> text,
+      "function" -> optional(text),
+      "quantity" -> optional(number)
+    )(ThingRelation.apply)(ThingRelation.unapply)
+  )
+
   def index = Action.async { implicit request =>
     thingDAO.all().map { things => Ok(views.html.things.index(things)) }
   }
@@ -76,20 +90,23 @@ class Things @Inject()(
   }
 
   def read(id: Long) = Action.async { implicit request =>
-    val data = for {
+    lazy val data = for {
       thing <- thingDAO.findById(id)
       linkedLabels <- labelDAO.getLinkedLabels(id)
       labelsToAdd <- labelDAO.all()
       barcodes <- barcodeDAO.getLinkedBarcodes(id)
-    } yield (thing, labelsToAdd, linkedLabels, barcodes)
+      parts <- thingDAO.getParts(id)
+      wholes <- thingDAO.getWholes(id)
+      things <- thingDAO.all()
+    } yield (thing, labelsToAdd, linkedLabels, barcodes, parts, wholes, things)
 
-    data.map { case (xthing, labelsToAdd, linkedLabels, barcodes) =>
+    data.map { case (xthing, labelsToAdd, linkedLabels, barcodes, parts, wholes, things) =>
       xthing match {
         case Some(thing) => Ok(
           views.html.things.read(
             thing,
-            thingForm.fill(thing), linkLabelForm, barcodeForm,
-            labelsToAdd, linkedLabels, barcodes
+            thingForm.fill(thing), linkLabelForm, barcodeForm, relationForm,
+            labelsToAdd, linkedLabels, barcodes, parts, wholes, things
           )
         )
         case None => NotFound
@@ -162,8 +179,26 @@ class Things @Inject()(
     )
   }
 
-  def addPart(id: Long) = TODO
+  def addPart(id: Long) = Action.async { implicit request =>
+    relationForm.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(Redirect(routes.Things.read(id)).flashing("error" -> "view.thing.part.not_added"))
+      },
+      newRelation => {
+        thingDAO.insertRelation(newRelation).map(_ => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.part.added"))
+      }
+    )
+  }
 
-  def removePart(id: Long) = TODO
+  def removePart(id: Long) = Action.async { implicit request =>
+    relationForm.bindFromRequest.fold(
+      formWithErrors => {
+        Future.successful(Redirect(routes.Things.read(id)).flashing("error" -> "view.thing.part.not_removed"))
+      },
+      oldRelation => {
+        thingDAO.deleteRelation(oldRelation.id.getOrElse(0)).map(_ => Redirect(routes.Things.read(id)).flashing("success" -> "view.thing.part.removed"))
+      }
+    )
+  }
 
 }
