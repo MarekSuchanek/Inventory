@@ -21,6 +21,7 @@ view.search.barcode.examples=Příklady
 view.search.barcode_scan=Skenovat čárový kód
 view.search.barcode_404=Čárový kód není v aplikaci registrován
 view.search.barcode.found=Položka s čárovám kódem byla nalezena
+view.search.no_result=Zadanému dotazu nevyhovuje žádný výsledek
 
 view.label.create.title=Vytvořit štítek
 view.label.index.title=Štítky

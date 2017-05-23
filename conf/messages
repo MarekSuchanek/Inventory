@@ -21,6 +21,7 @@ view.search.barcode.examples=Examples
 view.search.barcode_scan=Scan barcode
 view.search.barcode_404=This barcode is not registered in the Inventory
 view.search.barcode.found=Barcoded item has been found
+view.search.no_result=No result for this search query
 
 view.label.create.title=Create new label
 view.label.index.title=Labels
