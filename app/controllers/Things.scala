@@ -54,7 +54,7 @@ class Things @Inject()(
   val relationForm = Form(
     mapping(
       "id" -> optional(longNumber),
-      "relationType" -> nonEmptyText.verifying("model.relation.invalid.type", Thing.TYPES.contains(_)),
+      "relationType" -> nonEmptyText.verifying("model.relation.invalid.type", ThingRelation.TYPES.contains(_)),
       "partId" -> longNumber,
       "wholeId" -> longNumber,
       "since" -> jodaDate("yyyy-MM-dd'T'HH:mm"),

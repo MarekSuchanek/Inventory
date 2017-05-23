@@ -18,6 +18,7 @@ object ThingRelation {
 
   val COMPONENT_TYPE = "COMPONENT"
   val CONTAINMENT_TYPE = "CONTAINMENT"
+  val TYPES = List(COMPONENT_TYPE, CONTAINMENT_TYPE)
 
   def apply(id: Option[Long], relType: String, partId: Long, wholeId: Long, since: DateTime, until: Option[DateTime], slot: String, function: Option[String], quantity: Option[Int]) : ThingRelation =
     if (relType == COMPONENT_TYPE) Component(id, partId, wholeId, since, until, slot, function.getOrElse(""))

@@ -248,7 +248,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                @for((relation, part) <- wholes) {
+                @for((relation, whole) <- wholes) {
                     <tr>
                         <td>@relation.partId</td>
                         <td>
@@ -259,12 +259,12 @@
                                 <span class="glyphicon glyphicon-cog"></span>
                             }
                         </td>
-                        <td><a href="@routes.Things.read(relation.partId)">@part.name</a></td>
+                        <td><a href="@routes.Things.read(relation.wholeId)">@whole.name</a></td>
                         <td>@relation.since.toString("dd/MM/yyyy HH:mm")</td>
                         <td>@relation.until.map(_.toString("dd/MM/yyyy HH:mm"))</td>
                         <td>@relation.slot</td>
-                        <td>@relation.asInstanceOf[Containment].quantity</td>
-                        <td>@relation.asInstanceOf[Component].function</td>
+                        <td>@if(relation.relationType == ThingRelation.CONTAINMENT_TYPE) { @relation.asInstanceOf[Containment].quantity }</td>
+                        <td>@if(relation.relationType == ThingRelation.COMPONENT_TYPE) { @relation.asInstanceOf[Component].function }</td>
                     </tr>
                 }
                 </tbody>

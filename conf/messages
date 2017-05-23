@@ -52,6 +52,10 @@ view.thing.label.not_linked=Label has not been linked
 view.thing.label.linked=Label has been linked
 view.thing.label.not_unlinked=Label has not been unlinked
 view.thing.label.unlinked=Label has been unlinked
+view.thing.part.not_added=Part has not been added
+view.thing.part.added=Part has been added
+view.thing.part.not_removed=Part has not been removed
+view.thing.part.removed=Part has been removed
 
 view.common.form.create=Create
 view.common.form.update=Update
@@ -76,3 +80,11 @@ model.thing.invalid.type=Invalid item type
 
 model.barcode.standard=Standard
 model.barcode.code=Code
+
+model.relation.part=Part
+model.relation.type=Type
+model.relation.since=Since
+model.relation.until=Until
+model.relation.slot=Slot
+model.containment.quantity=Count
+model.component.function=Function
