@@ -61,6 +61,13 @@ view.thing.part.added=Part has been added
 view.thing.part.not_removed=Part has not been removed
 view.thing.part.removed=Part has been removed
 
+view.relation.edit=Edit relation
+view.relation.to_whole=To whole
+view.relation.to_part=To part
+view.relation.updated=Relation has been updated
+view.relation.not_updated=Relation has not been updated
+view.relation.deleted=Relation has been deleted
+
 view.common.form.create=Create
 view.common.form.update=Update
 view.common.form.delete=Delete

@@ -6,7 +6,8 @@
 /* Bootstrap fix */
 .navbar{border-radius: 0;}
 .navbar span.glyphicon,
-.nav span.glyphicon {margin-right: 0.3em;}
+.nav span.glyphicon,
+.btn span.glyphicon {margin-right: 0.3em;}
 .tab-pane{padding: 1em;}
 /* Sticky footer */
 * {

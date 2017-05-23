@@ -77,8 +77,14 @@ class ThingDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider
   def getParts(id: Long): Future[Seq[(ThingRelation, Thing)]] =
     db.run((relations join things on (_.partId === _.id)).filter(_._1.wholeId === id).result)
 
+  def findRelationById(id: Long): Future[Option[ThingRelation]] =
+    db.run(relations.filter(_.id === id).result.headOption)
+
   def insertRelation(relation: ThingRelation): Future[Long] =
     db.run((relations returning relations.map(_.id)) += relation)
+
+  def updateRelation(id: Long, relation: ThingRelation): Future[Unit] =
+    db.run(relations.filter(_.id === id).update(relation)).map(_ => ())
 
   def deleteRelation(id: Long): Future[Int] =
     db.run(relations.filter(_.id === id).delete)

@@ -148,9 +148,9 @@
                     @b3.hidden("relationType", ThingRelation.CONTAINMENT_TYPE)
                     @b3.hidden("wholeId", thing.id.getOrElse(0))
                     @b3.select(partForm("partId"), things.filterNot(t => t.id == thing.id).map(t => (t.id.getOrElse(0).toString, t.name + " #"+t.id.getOrElse(0))), '_label -> Messages("model.relation.part"))
-                    @b3.datetimeLocal(thingForm("since"), '_label -> Messages("model.relation.since"))
-                    @b3.datetimeLocal(thingForm("until"), '_label -> Messages("model.relation.until"))
-                    @b3.text(thingForm("slot"), '_label -> Messages("model.relation.slot"))
+                    @b3.datetimeLocal(partForm("since"), '_label -> Messages("model.relation.since"))
+                    @b3.datetimeLocal(partForm("until"), '_label -> Messages("model.relation.until"))
+                    @b3.text(partForm("slot"), '_label -> Messages("model.relation.slot"))
                     @b3.number(partForm("quantity"), '_label -> Messages("model.containment.quantity"), 'min -> "1", '_value -> "1")
                     @b3.submit('class -> "btn btn-success") {
                         <span class="glyphicon glyphicon-plus"></span>
@@ -169,6 +169,7 @@
                             <th>@Messages("model.relation.until")</th>
                             <th>@Messages("model.relation.slot")</th>
                             <th>@Messages("model.containment.quantity")</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -180,6 +181,7 @@
                             <td>@containment.until.map(_.toString("dd/MM/yyyy HH:mm"))</td>
                             <td>@containment.slot</td>
                             <td>@containment.asInstanceOf[Containment].quantity</td>
+                            <td><a href="@routes.Relations.editForm(containment.id.getOrElse(0))" class="btn-sm btn btn-primary"><span class="glyphicon glyphicon-edit"></span></a></td>
                         </tr>
                     }
                     </tbody>
@@ -215,6 +217,7 @@
                             <th>@Messages("model.relation.until")</th>
                             <th>@Messages("model.relation.slot")</th>
                             <th>@Messages("model.component.function")</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -226,6 +229,7 @@
                             <td>@component.until.map(_.toString("dd/MM/yyyy HH:mm"))</td>
                             <td>@component.slot</td>
                             <td>@component.asInstanceOf[Component].function</td>
+                            <td><a href="@routes.Relations.editForm(component.id.getOrElse(0))" class="btn-sm btn btn-primary"><span class="glyphicon glyphicon-edit"></span></a></td>
                         </tr>
                     }
                     </tbody>
@@ -245,6 +249,7 @@
                         <th>@Messages("model.relation.slot")</th>
                         <th>@Messages("model.containment.quantity")</th>
                         <th>@Messages("model.component.function")</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -265,6 +270,7 @@
                         <td>@relation.slot</td>
                         <td>@if(relation.relationType == ThingRelation.CONTAINMENT_TYPE) { @relation.asInstanceOf[Containment].quantity }</td>
                         <td>@if(relation.relationType == ThingRelation.COMPONENT_TYPE) { @relation.asInstanceOf[Component].function }</td>
+                        <td><a href="@routes.Relations.editForm(relation.id.getOrElse(0))" class="btn-sm btn btn-primary"><span class="glyphicon glyphicon-edit"></span></a></td>
                     </tr>
                 }
                 </tbody>

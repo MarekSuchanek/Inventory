@@ -1,0 +1,47 @@
+@(
+        relation: ThingRelation, relationForm: Form[ThingRelation]
+)(
+        implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash
+)
+
+@import helper._
+
+@import b3.vertical.fieldConstructor
+
+
+@main(Messages("view.relation.edit")) {
+
+    <h1>@Messages("view.relation.edit")</h1>
+
+    <div class="btn-group" role="group" aria-label="...">
+        <a href="@routes.Things.read(relation.wholeId)" class="btn btn-default">
+            <span class="glyphicon glyphicon-folder-open"></span>
+            @Messages("view.relation.to_whole")
+        </a>
+        <a href="@routes.Things.read(relation.partId)" class="btn btn-default">
+            <span class="glyphicon glyphicon-file"></span>
+            @Messages("view.relation.to_part")
+        </a>
+    </div>
+
+    <hr>
+
+    @b3.form(routes.Relations.edit(relation.id.getOrElse(0))) {
+        @b3.hidden("relationType", ThingRelation.CONTAINMENT_TYPE)
+        @b3.hidden("id", relation.id.getOrElse(0))
+        @b3.hidden("wholeId", relation.wholeId)
+        @b3.hidden("partId", relation.partId)
+        @b3.datetimeLocal(relationForm("since"), '_label -> Messages("model.relation.since"))
+        @b3.datetimeLocal(relationForm("until"), '_label -> Messages("model.relation.until"))
+        @b3.text(relationForm("slot"), '_label -> Messages("model.relation.slot"))
+        @b3.number(relationForm("quantity"), '_label -> Messages("model.containment.quantity"), 'min -> "1", '_value -> "1")
+        @b3.submit('class -> "btn btn-success") {
+            <span class="glyphicon glyphicon-edit"></span>
+            @Messages("view.common.form.update")
+        }
+    }
+
+    @form(routes.Relations.delete(relation.id.getOrElse(0))) {
+        <button type="submit" class="btn btn-danger">@Messages("view.common.form.delete")</button>
+    }
+}

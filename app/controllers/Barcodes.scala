@@ -45,7 +45,7 @@ class Barcodes @Inject()(
   def update(id: Long) = Action.async { implicit request =>
     barcodeForm.bindFromRequest.fold(
       formWithErrors => {
-        Future.successful(Redirect(routes.Barcodes.read(id)).flashing("error" -> "view.barcode.not_updated"))
+        Future.successful(Redirect(routes.Barcodes.read(id)).flashing("danger" -> "view.barcode.not_updated"))
       },
       barcode => {
         barcodeDAO.update(id, barcode).map(_ => Redirect(routes.Barcodes.read(id)).flashing("success" -> "view.barcode.updated"))
