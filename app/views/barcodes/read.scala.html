@@ -60,7 +60,10 @@
             }
 
             @form(routes.Barcodes.delete(barcode.id.getOrElse(0))) {
-                <button type="submit" class="btn btn-danger">@Messages("view.common.form.delete")</button>
+                <button type="submit" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-trash"></span>
+                    @Messages("view.common.form.delete")
+                </button>
             }
         </div>
     </div>

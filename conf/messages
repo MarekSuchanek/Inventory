@@ -21,6 +21,7 @@ view.search.barcode.examples=Examples
 view.search.barcode_scan=Scan barcode
 view.search.barcode_404=This barcode is not registered in the Inventory
 view.search.barcode.found=Barcoded item has been found
+view.search.barcode.placeholder=Scan barcode or enter it manually...
 view.search.no_result=No result for this search query
 
 view.label.create.title=Create new label
@@ -31,6 +32,7 @@ view.label.deleted=Label has been deleted
 view.label.description=Info
 view.label.things=Items
 view.label.manage=Manage
+view.label.no_labels=There are no labels created
 
 view.thing.index.title=Items
 view.thing.create.atomic=Create single item
@@ -60,6 +62,7 @@ view.thing.part.not_added=Part has not been added
 view.thing.part.added=Part has been added
 view.thing.part.not_removed=Part has not been removed
 view.thing.part.removed=Part has been removed
+view.thing.no_things=There are no items created
 
 view.relation.edit=Edit relation
 view.relation.to_whole=To whole
@@ -67,6 +70,8 @@ view.relation.to_part=To part
 view.relation.updated=Relation has been updated
 view.relation.not_updated=Relation has not been updated
 view.relation.deleted=Relation has been deleted
+
+view.barcode.no_barcodes=There are no barcodes created
 
 view.common.form.create=Create
 view.common.form.update=Update

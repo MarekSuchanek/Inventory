@@ -24,7 +24,7 @@
     <form action="@routes.Search.barcodeRedir()" method="post">
         <div class="input-group input-group-lg">
             <span class="input-group-addon" id="sizing-addon1"><span class="glyphicon glyphicon-barcode"></span></span>
-            <input type="text" class="form-control" name="query" id="query" value="@query.getOrElse("")" autofocus>
+            <input type="text" class="form-control" name="query" id="query" value="@query.getOrElse("")" placeholder="@Messages("view.search.barcode.placeholder")" autofocus>
             <span class="input-group-btn">
                 <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span> @Messages("view.search.button")</button>
                 <button class="btn btn-danger" type="reset" id="btn-reset"><span class="glyphicon glyphicon-remove"></span></button>
