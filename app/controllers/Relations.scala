@@ -52,7 +52,7 @@ class Relations @Inject()(
   }
 
   def delete(id: Long): Action[AnyContent] = Action.async { implicit request =>
-    thingDAO.delete(id).map { x: Int =>
+    thingDAO.deleteRelation(id).map { x: Int =>
       if (x == 1) Redirect(routes.Things.index()).flashing("success" -> "view.relation.deleted")
       else NotFound
     }

@@ -72,6 +72,9 @@ view.relation.not_updated=Relace nebyla aktualizována
 view.relation.deleted=Relace byla odstraněna
 
 view.barcode.no_barcodes=Nejsou vytvořeny žádné čárové kódy
+view.barcode.updated=Čárový kód byl aktualizován
+view.barcode.not_updated=Čárový kód nebyl aktualizován
+view.barcode.deleted=Čárový kód byl odstraněn
 
 view.common.form.create=Vytvořit
 view.common.form.update=Aktualizovat

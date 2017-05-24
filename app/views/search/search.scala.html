@@ -19,7 +19,6 @@
 
         <form action="@routes.Search.searchRedir()" method="post">
             <div class="input-group input-group-lg">
-                <span class="input-group-addon" id="sizing-addon1"><span class="glyphicon glyphicon-barcode"></span></span>
                 <input type="text" class="form-control" placeholder="@Messages("view.search.placeholder")" name="query" id="query" value="@query.getOrElse("")" autofocus>
                 <span class="input-group-btn">
                     <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span> @Messages("view.search.button")</button>
@@ -38,9 +37,9 @@
         }
         @if(query.isDefined && (things.nonEmpty || labels.nonEmpty || barcodes.nonEmpty)) {
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#things" data-toggle="tab"><span class="glyphicon glyphicon-hdd"></span> @Messages("basic.things") <span class="label label-@if(things.isEmpty) {default} @if(things.nonEmpty) {success}">@things.size</span></a></li>
-                <li><a href="#labels" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span> @Messages("basic.labels") <span class="label label-@if(labels.isEmpty) {default} @if(labels.nonEmpty) {success}">@labels.size</span></a></li>
-                <li><a href="#barcodes" data-toggle="tab"><span class="glyphicon glyphicon-barcode"></span> @Messages("basic.barcodes") <span class="label label-@if(barcodes.isEmpty) {default} @if(barcodes.nonEmpty) {success}">@barcodes.size</span></a></li>
+                <li class="active"><a href="#things" data-toggle="tab"><span class="glyphicon glyphicon-hdd"></span> @Messages("basic.things") <span class="label label-@if(things.isEmpty) {default}@if(things.nonEmpty) {success}">@things.size</span></a></li>
+                <li><a href="#labels" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span> @Messages("basic.labels") <span class="label label-@if(labels.isEmpty) {default}@if(labels.nonEmpty) {success}">@labels.size</span></a></li>
+                <li><a href="#barcodes" data-toggle="tab"><span class="glyphicon glyphicon-barcode"></span> @Messages("basic.barcodes") <span class="label label-@if(barcodes.isEmpty) {default}@if(barcodes.nonEmpty) {success}">@barcodes.size</span></a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="things">

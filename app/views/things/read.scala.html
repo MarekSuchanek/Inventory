@@ -199,11 +199,11 @@
                 @b3.form(routes.Things.addPart(thing.id.getOrElse(0))) {
                     @b3.hidden("wholeId", thing.id.getOrElse(0))
                     @b3.hidden("relationType", ThingRelation.COMPONENT_TYPE)
-                    @b3.number(partForm("partId"), '_label -> Messages("model.relation.part"))
+                    @b3.select(partForm("partId"), things.filterNot(t => t.id == thing.id).map(t => (t.id.getOrElse(0).toString, t.name + " #" + t.id.getOrElse(0))), '_label -> Messages("model.relation.part"))
                     @b3.datetimeLocal(thingForm("since"), '_label -> Messages("model.relation.since"))
                     @b3.datetimeLocal(thingForm("until"), '_label -> Messages("model.relation.until"))
                     @b3.text(thingForm("slot"), '_label -> Messages("model.relation.slot"))
-                    @b3.text(partForm("function"), '_label -> Messages("model.containment.function"))
+                    @b3.text(partForm("function"), '_label -> Messages("model.component.function"))
                     @b3.submit('class -> "btn btn-success") {
                         <span class="glyphicon glyphicon-plus"></span>
                         @Messages("view.common.form.add")
@@ -240,7 +240,7 @@
                 </table>
             </div>
         }
-        <div class="tab-pane @if(tab.contains("parts")) {wholes}" id="wholes">
+        <div class="tab-pane @if(tab.contains("wholes")) {active}" id="wholes">
 
             <table class="table table-striped">
                 <thead>
@@ -262,10 +262,10 @@
                         <td>@relation.partId</td>
                         <td>
                             @if(relation.relationType == ThingRelation.CONTAINMENT_TYPE) {
-                                <span class="glyphicon glyphicon-gift"></span>
+                                <span class="glyphicon glyphicon-gift" title="@Messages("basic.container")"></span>
                             }
                             @if(relation.relationType == ThingRelation.COMPONENT_TYPE) {
-                                <span class="glyphicon glyphicon-cog"></span>
+                                <span class="glyphicon glyphicon-cog" title="@Messages("basic.functional_whole")"></span>
                             }
                         </td>
                         <td><a href="@routes.Things.read(relation.wholeId, Some("parts"))">@whole.name</a></td>
@@ -282,7 +282,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="tab-pane @if(tab.contains("parts")) {manage}" id="manage">
+        <div class="tab-pane @if(tab.contains("manage")) {active}" id="manage">
             @b3.form(routes.Things.update(thing.id.getOrElse(0))) {
                 @b3.hidden("thingType", thing.thingType)
                 @b3.text(thingForm("name"), '_label -> Messages("model.thing.name"))

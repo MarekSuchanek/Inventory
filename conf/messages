@@ -72,6 +72,9 @@ view.relation.not_updated=Relation has not been updated
 view.relation.deleted=Relation has been deleted
 
 view.barcode.no_barcodes=There are no barcodes created
+view.barcode.updated=Barcode has been updated
+view.barcode.not_updated=Barcode has not been updated
+view.barcode.deleted=Barcode has been deleted
 
 view.common.form.create=Create
 view.common.form.update=Update
