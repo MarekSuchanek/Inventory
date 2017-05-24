@@ -1,19 +1,14 @@
 package dao
 
-import scala.concurrent.{ ExecutionContext, Future }
 import javax.inject.Inject
 
-import models.Label
-import models.LabelThing
-import models.Thing
-
-import play.api.db.slick.DatabaseConfigProvider
-import play.api.db.slick.HasDatabaseConfigProvider
+import models.{Label, LabelThing, Thing}
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LabelDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends ThingComponent with HasDatabaseConfigProvider[JdbcProfile] {
+class LabelDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends ThingComponent with HasDatabaseConfigProvider[JdbcProfile] {
 
   import profile.api._
 
@@ -53,22 +48,31 @@ class LabelDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider
 
   class LabelsTable(tag: Tag) extends Table[Label](tag, "LABELS") {
 
-    def id = column[Long]("LABEL_ID", O.PrimaryKey, O.AutoInc)
-    def name = column[String]("NAME")
-    def description = column[String]("DESCRIPTION")
-    def color = column[String]("COLOR")
     def * = (id.?, name, description, color) <> (Label.tupled, Label.unapply)
+
+    def id = column[Long]("LABEL_ID", O.PrimaryKey, O.AutoInc)
+
+    def name = column[String]("NAME")
+
+    def description = column[String]("DESCRIPTION")
+
+    def color = column[String]("COLOR")
   }
 
   class LabelThingsTable(tag: Tag) extends Table[LabelThing](tag, "LABELS_THINGS") {
 
-    def id = column[Long]("LABELTHING_ID", O.PrimaryKey, O.AutoInc)
-    def labelId = column[Long]("LABEL_ID")
-    def thingId = column[Long]("THING_ID")
     def * = (id.?, labelId, thingId) <> (LabelThing.tupled, LabelThing.unapply)
 
-    def label = foreignKey("LABEL", labelId, labels)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
-    def thing = foreignKey("THING", labelId, things)(_.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)
+    def id = column[Long]("LABELTHING_ID", O.PrimaryKey, O.AutoInc)
+
+    def thingId = column[Long]("THING_ID")
+
+    def label = foreignKey("LABEL", labelId, labels)(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
+
+    def thing = foreignKey("THING", labelId, things)(_.id, onUpdate = ForeignKeyAction.Cascade, onDelete = ForeignKeyAction.Cascade)
+
+    def labelId = column[Long]("LABEL_ID")
 
   }
+
 }

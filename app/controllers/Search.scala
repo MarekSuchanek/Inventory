@@ -1,14 +1,12 @@
 package controllers
 
-import dao.{BarcodeDAO, LabelDAO, ThingDAO}
-import play.api._
-import play.api.mvc._
-import play.api.i18n.I18nSupport
 import javax.inject.{Inject, Singleton}
 
-import play.api.i18n.MessagesApi
+import dao.{BarcodeDAO, LabelDAO, ThingDAO}
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc._
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class Search @Inject()(
@@ -20,7 +18,7 @@ class Search @Inject()(
                       (implicit executionContext: ExecutionContext)
   extends Controller with I18nSupport {
 
-  def search(query: Option[String]) = Action.async { implicit request =>
+  def search(query: Option[String]): Action[AnyContent] = Action.async { implicit request =>
     query match {
       case None => Future.successful(Ok(views.html.search.search(query)))
       case Some(s) =>
@@ -36,11 +34,11 @@ class Search @Inject()(
     }
   }
 
-  def searchRedir = Action { implicit request =>
+  def searchRedir: Action[AnyContent] = Action { implicit request =>
     Redirect(routes.Search.search(Some(request.body.asFormUrlEncoded.get("query").head)))
   }
 
-  def barcode(query: Option[String]) = Action.async { implicit request =>
+  def barcode(query: Option[String]): Action[AnyContent] = Action.async { implicit request =>
     query match {
       case None => Future.successful(Ok(views.html.search.barcode(query)))
       case Some(s) =>
@@ -51,7 +49,7 @@ class Search @Inject()(
     }
   }
 
-  def barcodeRedir = Action { implicit request =>
+  def barcodeRedir: Action[AnyContent] = Action { implicit request =>
     Redirect(routes.Search.barcode(Some(request.body.asFormUrlEncoded.get("query").head)))
   }
 }

@@ -1,32 +1,33 @@
 @(labels: Seq[Label])(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
 
-@main(Messages("view.label.index.title")) {
+    @main(Messages("view.label.index.title")) {
 
-    <h1>@Messages("view.label.index.title")</h1>
-    @if(labels.isEmpty){
-        <div class="alert alert-info">
-             @Messages("view.label.no_labels")
-        </div>
+        <h1>@Messages("view.label.index.title")</h1>
+        @if(labels.isEmpty) {
+            <div class="alert alert-info">
+            @Messages("view.label.no_labels")
+            </div>
+        }
+        @if(labels.nonEmpty) {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>@Messages("model.label.name")</th>
+                        <th>@Messages("model.label.description")</th>
+                        <th colspan="2">@Messages("model.label.color")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for(c <- labels) {
+                    <tr>
+                        <td><a href="@routes.Labels.read(c.id.getOrElse(0))">@c.name</a></td>
+                        <td>@c.description</td>
+                        <td>@c.color</td>
+                        <td style="background-color:
+                        @c.color;">&nbsp;</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
     }
-    @if(labels.nonEmpty){
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>@Messages("model.label.name")</th>
-                    <th>@Messages("model.label.description")</th>
-                    <th colspan="2">@Messages("model.label.color")</th>
-                </tr>
-            </thead>
-            <tbody>
-            @for(c <- labels) {
-                <tr>
-                    <td><a href="@routes.Labels.read(c.id.getOrElse(0))">@c.name</a></td>
-                    <td>@c.description</td>
-                    <td>@c.color</td>
-                    <td style="background-color: @c.color;">&nbsp;</td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    }
-}

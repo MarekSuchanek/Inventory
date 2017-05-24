@@ -1,15 +1,13 @@
 package controllers
 
-import dao.{BarcodeDAO, LabelDAO, ThingDAO}
-import play.api._
-import play.api.mvc._
-import play.api.i18n.I18nSupport
 import javax.inject.{Inject, Singleton}
 
+import dao.{BarcodeDAO, LabelDAO, ThingDAO}
 import models.{Barcode, LabelThing, Thing, ThingRelation}
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.MessagesApi
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -65,11 +63,11 @@ class Things @Inject()(
     )(ThingRelation.apply)(ThingRelation.unapply)
   )
 
-  def index = Action.async { implicit request =>
+  def index: Action[AnyContent] = Action.async { implicit request =>
     thingDAO.all().map { things => Ok(views.html.things.index(things)) }
   }
 
-  def createForm(thing_type: Option[String]) = Action { implicit request =>
+  def createForm(thing_type: Option[String]): Action[AnyContent] = Action { implicit request =>
     thing_type match {
       case Some("atomic") => Ok(views.html.things.create(thingForm, Thing.ATOMIC_TYPE))
       case Some("container") => Ok(views.html.things.create(thingForm, Thing.CONTAINER_TYPE))
@@ -78,7 +76,7 @@ class Things @Inject()(
     }
   }
 
-  def create = Action.async { implicit request =>
+  def create: Action[AnyContent] = Action.async { implicit request =>
     thingForm.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.things.create(formWithErrors, formWithErrors.get.thingType)))
@@ -89,7 +87,7 @@ class Things @Inject()(
     )
   }
 
-  def read(id: Long, tab: Option[String]) = Action.async { implicit request =>
+  def read(id: Long, tab: Option[String]): Action[AnyContent] = Action.async { implicit request =>
     lazy val data = for {
       thing <- thingDAO.findById(id)
       linkedLabels <- labelDAO.getLinkedLabels(id)
@@ -114,12 +112,12 @@ class Things @Inject()(
     }
   }
 
-  def update(id: Long) = Action.async { implicit request =>
+  def update(id: Long): Action[AnyContent] = Action.async { implicit request =>
     thingForm.bindFromRequest.fold(
       formWithErrors => {
         thingDAO.findById(id).map {
-            case Some(oldThing) => Redirect(routes.Things.read(id, None)).flashing("success" -> "view.thing.not_updated")
-            case None => NotFound
+          case Some(oldThing) => Redirect(routes.Things.read(id, None)).flashing("success" -> "view.thing.not_updated")
+          case None => NotFound
         }
       },
       newThing => {
@@ -128,14 +126,14 @@ class Things @Inject()(
     )
   }
 
-  def delete(id: Long) = Action.async { implicit request =>
+  def delete(id: Long): Action[AnyContent] = Action.async { implicit request =>
     thingDAO.delete(id).map { x: Int =>
       if (x == 1) Redirect(routes.Things.index()).flashing("success" -> "view.thing.deleted")
       else NotFound
     }
   }
 
-  def linkLabel(id: Long) = Action.async { implicit request =>
+  def linkLabel(id: Long): Action[AnyContent] = Action.async { implicit request =>
     linkLabelForm.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(Redirect(routes.Things.read(id, Some("labels"))).flashing("danger" -> "view.thing.label.not_linked"))
@@ -146,7 +144,7 @@ class Things @Inject()(
     )
   }
 
-  def unlinkLabel(id: Long) = Action.async { implicit request =>
+  def unlinkLabel(id: Long): Action[AnyContent] = Action.async { implicit request =>
     linkLabelForm.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(Redirect(routes.Things.read(id, Some("labels"))).flashing("danger" -> "view.thing.label.not_unlinked"))
@@ -157,7 +155,7 @@ class Things @Inject()(
     )
   }
 
-  def addBarcode(id: Long) = Action.async { implicit request =>
+  def addBarcode(id: Long): Action[AnyContent] = Action.async { implicit request =>
     barcodeForm.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(Redirect(routes.Things.read(id, Some("barcodes"))).flashing("danger" -> "view.thing.barcode.not_added"))
@@ -168,7 +166,7 @@ class Things @Inject()(
     )
   }
 
-  def removeBarcode(id: Long) = Action.async { implicit request =>
+  def removeBarcode(id: Long): Action[AnyContent] = Action.async { implicit request =>
     barcodeForm.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(Redirect(routes.Things.read(id, Some("barcodes"))).flashing("danger" -> "view.thing.barcode.not_removed"))
@@ -179,7 +177,7 @@ class Things @Inject()(
     )
   }
 
-  def addPart(id: Long) = Action.async { implicit request =>
+  def addPart(id: Long): Action[AnyContent] = Action.async { implicit request =>
     relationForm.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(Redirect(routes.Things.read(id, Some("parts"))).flashing("danger" -> "view.thing.part.not_added"))
@@ -190,7 +188,7 @@ class Things @Inject()(
     )
   }
 
-  def removePart(id: Long) = Action.async { implicit request =>
+  def removePart(id: Long): Action[AnyContent] = Action.async { implicit request =>
     relationForm.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(Redirect(routes.Things.read(id, Some("parts"))).flashing("danger" -> "view.thing.part.not_removed"))

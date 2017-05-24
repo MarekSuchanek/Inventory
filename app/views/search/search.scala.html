@@ -38,9 +38,9 @@
         }
         @if(query.isDefined && (things.nonEmpty || labels.nonEmpty || barcodes.nonEmpty)) {
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#things" data-toggle="tab"><span class="glyphicon glyphicon-hdd"></span> @Messages("basic.things") <span class="label label-@if(things.isEmpty){default}@if(things.nonEmpty){success}">@things.size</span></a></li>
-                <li><a href="#labels" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span> @Messages("basic.labels") <span class="label label-@if(labels.isEmpty){default}@if(labels.nonEmpty){success}">@labels.size</span></a></li>
-                <li><a href="#barcodes" data-toggle="tab"><span class="glyphicon glyphicon-barcode"></span> @Messages("basic.barcodes") <span class="label label-@if(barcodes.isEmpty){default}@if(barcodes.nonEmpty){success}">@barcodes.size</span></a></li>
+                <li class="active"><a href="#things" data-toggle="tab"><span class="glyphicon glyphicon-hdd"></span> @Messages("basic.things") <span class="label label-@if(things.isEmpty) {default} @if(things.nonEmpty) {success}">@things.size</span></a></li>
+                <li><a href="#labels" data-toggle="tab"><span class="glyphicon glyphicon-tags"></span> @Messages("basic.labels") <span class="label label-@if(labels.isEmpty) {default} @if(labels.nonEmpty) {success}">@labels.size</span></a></li>
+                <li><a href="#barcodes" data-toggle="tab"><span class="glyphicon glyphicon-barcode"></span> @Messages("basic.barcodes") <span class="label label-@if(barcodes.isEmpty) {default} @if(barcodes.nonEmpty) {success}">@barcodes.size</span></a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="things">
@@ -82,7 +82,8 @@
                                 <td><a href="@routes.Labels.read(c.id.getOrElse(0))">@c.name</a></td>
                                 <td>@c.description</td>
                                 <td>@c.color</td>
-                                <td style="background-color: @c.color;">&nbsp;</td>
+                                <td style="background-color:
+                                @c.color;">&nbsp;</td>
                             </tr>
                         }
                         </tbody>

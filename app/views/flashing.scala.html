@@ -1,10 +1,10 @@
 @()(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
 
-@if(!flash.isEmpty) {
-    @for((msgKey, msgValue) <- flash.data) {
-        <div class="alert alert-@msgKey" data-dismiss="alert">
-            <a title="@Messages("view.message.close")" class="close">×</a>
-            <strong>@Messages("view.message.key."+msgKey)</strong>: @Messages(msgValue)
-        </div>
+    @if(!flash.isEmpty) {
+        @for((msgKey, msgValue) <- flash.data) {
+            <div class="alert alert-@msgKey" data-dismiss="alert">
+                <a title="@Messages("view.message.close")" class="close">×</a>
+                <strong>@Messages("view.message.key." + msgKey)</strong>: @Messages(msgValue)
+            </div>
+        }
     }
-}

@@ -1,28 +1,28 @@
 @()(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
 
-    @scripts = {
-        <script type="application/javascript">
-                $('#btn-reset').click(function () {
-                    $('#query').attr('value', '');
-                });
-        </script>
-    }
+@scripts = {
+    <script type="application/javascript">
+            $('#btn-reset').click(function () {
+                $('#query').attr('value', '');
+            });
+    </script>
+}
 
-    @main(Messages("basic.inventory"), scripts) {
-        <div class="jumbotron">
-            <h1>@Messages("basic.inventory")</h1>
+@main(Messages("basic.inventory"), scripts) {
+    <div class="jumbotron">
+        <h1>@Messages("basic.inventory")</h1>
 
-            <p>@Messages("view.index.text")</p>
+        <p>@Messages("view.index.text")</p>
 
 
-            <form action="@routes.Search.searchRedir()" method="post">
-                <div class="input-group input-group-lg">
-                    <input type="text" class="form-control" placeholder="@Messages("view.search.placeholder")" name="query" id="query" autofocus>
-                    <span class="input-group-btn">
-                        <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span> @Messages("view.search.button")</button>
-                    </span>
-                </div>
-            </form>
+        <form action="@routes.Search.searchRedir()" method="post">
+            <div class="input-group input-group-lg">
+                <input type="text" class="form-control" placeholder="@Messages("view.search.placeholder")" name="query" id="query" autofocus>
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span> @Messages("view.search.button")</button>
+                </span>
+            </div>
+        </form>
 
-        </div>
-    }
+    </div>
+}

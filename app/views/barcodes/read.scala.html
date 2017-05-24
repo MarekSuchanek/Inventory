@@ -4,9 +4,8 @@
         implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash
 )
 
-@import helper._
-
 @import b3.vertical.fieldConstructor
+@import helper._
 
 @scripts = {
     <script type="application/javascript" src="@routes.Assets.at("javascripts/JsBarcode.all.min.js")"></script>

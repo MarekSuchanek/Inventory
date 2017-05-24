@@ -1,15 +1,10 @@
 package controllers
 
-import dao.LabelDAO
-import play.api._
-import play.api.mvc._
-import play.api.i18n.I18nSupport
 import javax.inject.{Inject, Singleton}
 
-import models.Label
-import play.api.data._
-import play.api.data.Forms._
-import play.api.i18n.MessagesApi
+import dao.LabelDAO
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc._
 
 import scala.concurrent.ExecutionContext
 

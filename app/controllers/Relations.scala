@@ -1,25 +1,22 @@
 package controllers
 
-import dao.{BarcodeDAO, LabelDAO, ThingDAO}
-import play.api._
-import play.api.mvc._
-import play.api.i18n.I18nSupport
 import javax.inject.{Inject, Singleton}
 
-import models.{Barcode, Label, ThingRelation}
+import dao.ThingDAO
+import models.ThingRelation
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.validation.Constraints._
-import play.api.i18n.MessagesApi
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class Relations @Inject()(
-                          val thingDAO: ThingDAO,
-                          val messagesApi: MessagesApi
-                        )
-                        (implicit executionContext: ExecutionContext)
+                           val thingDAO: ThingDAO,
+                           val messagesApi: MessagesApi
+                         )
+                         (implicit executionContext: ExecutionContext)
   extends Controller with I18nSupport {
 
   val relationForm = Form(
@@ -36,14 +33,14 @@ class Relations @Inject()(
     )(ThingRelation.apply)(ThingRelation.unapply)
   )
 
-  def editForm(id: Long) = Action.async { implicit request =>
+  def editForm(id: Long): Action[AnyContent] = Action.async { implicit request =>
     thingDAO.findRelationById(id).map {
       case Some(relation) => Ok(views.html.relations.edit(relation, relationForm.fill(relation)))
       case None => NotFound
     }
   }
 
-  def edit(id: Long) = Action.async { implicit request =>
+  def edit(id: Long): Action[AnyContent] = Action.async { implicit request =>
     relationForm.bindFromRequest.fold(
       formWithErrors => {
         Future.successful(Redirect(routes.Relations.editForm(id)).flashing("danger" -> "view.relation.not_updated"))
@@ -54,7 +51,7 @@ class Relations @Inject()(
     )
   }
 
-  def delete(id: Long) = Action.async { implicit request =>
+  def delete(id: Long): Action[AnyContent] = Action.async { implicit request =>
     thingDAO.delete(id).map { x: Int =>
       if (x == 1) Redirect(routes.Things.index()).flashing("success" -> "view.relation.deleted")
       else NotFound

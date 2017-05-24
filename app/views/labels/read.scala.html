@@ -1,8 +1,7 @@
 @(label: Label, labelForm: Form[Label], things: Seq[(LabelThing, Thing)])(implicit request: RequestHeader, messages: Messages, lang: Lang, flash: Flash)
 
-@import helper._
-
 @import b3.vertical.fieldConstructor
+@import helper._
 
 @main(Messages("basic.label") + ": " + label.name) {
 
@@ -24,7 +23,7 @@
             <div class="alert alert-info" >
                 <span class="glyphicon glyphicon-exclamation-sign"></span> @Messages("view.thing.no_barcodes")
             </div>
-        }else {
+        } else {
             <table class="table table-striped">
                 <thead>
                     <th>@Messages("model.thing.name")</th>
@@ -44,10 +43,10 @@
         </div>
         <div class="tab-pane" id="manage">
             @b3.form(routes.Labels.update(label.id.getOrElse(0))) {
-                @b3.text( labelForm("name"), '_label -> Messages("model.label.name"))
-                @b3.color( labelForm("color"), '_label -> Messages("model.label.color"))
-                @b3.textarea( labelForm("description"), '_label -> Messages("model.label.description"))
-                @b3.submit('class -> "btn btn-success"){
+                @b3.text(labelForm("name"), '_label -> Messages("model.label.name"))
+                @b3.color(labelForm("color"), '_label -> Messages("model.label.color"))
+                @b3.textarea(labelForm("description"), '_label -> Messages("model.label.description"))
+                @b3.submit('class -> "btn btn-success") {
                     <span class="glyphicon glyphicon-edit"></span>
                     @Messages("view.common.form.update")
                 }

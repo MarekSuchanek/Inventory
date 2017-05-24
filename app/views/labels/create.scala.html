@@ -8,10 +8,12 @@
     <h1>@Messages("view.label.create.title")</h1>
 
     @b3.form(routes.Labels.create) {
-        @b3.text( labelForm("name"), '_label -> Messages("model.label.name"))
-        @b3.color( labelForm("color"), '_label -> Messages("model.label.color"))
-        @b3.textarea( labelForm("description"), '_label -> Messages("model.label.description"))
-        @b3.submit('class -> "btn btn-default"){ @Messages("view.common.form.create") }
+        @b3.text(labelForm("name"), '_label -> Messages("model.label.name"))
+        @b3.color(labelForm("color"), '_label -> Messages("model.label.color"))
+        @b3.textarea(labelForm("description"), '_label -> Messages("model.label.description"))
+        @b3.submit('class -> "btn btn-default") {
+            @Messages("view.common.form.create")
+        }
     }
 
 }

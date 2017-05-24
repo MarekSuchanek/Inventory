@@ -20,12 +20,12 @@ object ThingRelation {
   val CONTAINMENT_TYPE = "CONTAINMENT"
   val TYPES = List(COMPONENT_TYPE, CONTAINMENT_TYPE)
 
-  def apply(id: Option[Long], relType: String, partId: Long, wholeId: Long, since: DateTime, until: Option[DateTime], slot: String, function: Option[String], quantity: Option[Int]) : ThingRelation =
+  def tupled(tuple: (Option[Long], String, Long, Long, DateTime, Option[DateTime], String, Option[String], Option[Int])): ThingRelation = (apply _).tupled(tuple)
+
+  def apply(id: Option[Long], relType: String, partId: Long, wholeId: Long, since: DateTime, until: Option[DateTime], slot: String, function: Option[String], quantity: Option[Int]): ThingRelation =
     if (relType == COMPONENT_TYPE) Component(id, partId, wholeId, since, until, slot, function.getOrElse(""))
     else if (relType == CONTAINMENT_TYPE) Containment(id, partId, wholeId, since, until, slot, quantity.getOrElse(1))
     else throw new IllegalArgumentException("Unknown thing type")
-
-  def tupled(tuple: (Option[Long], String, Long, Long, DateTime, Option[DateTime], String, Option[String], Option[Int])): ThingRelation = (apply _).tupled(tuple)
 
   def unapply(relation: ThingRelation): Option[(Option[Long], String, Long, Long, DateTime, Option[DateTime], String, Option[String], Option[Int])] = relation match {
     case Component(id, partId, wholeId, since, until, slot, function) => Some(id, COMPONENT_TYPE, partId, wholeId, since, until, slot, Some(function), None)

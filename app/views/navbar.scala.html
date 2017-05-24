@@ -1,74 +1,84 @@
 @()(implicit request: RequestHeader, messages: Messages, lang: Lang)
 
-@activeLink(pathRegex: String) = @{
-    if(request.path.matches(pathRegex)) "active"
-}
+    @activeLink(pathRegex: String) = @{
+        if(request.path.matches(pathRegex)) "active"
+    }
 
-<nav class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="@routes.Application.index()">
-                <span class="glyphicon glyphicon-piggy-bank"></span> @Messages("basic.inventory")
-            </a>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="@routes.Application.index()">
+                    <span class="glyphicon glyphicon-piggy-bank"></span>
+                    @Messages("basic.inventory")
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="@activeLink("/search*")">
+                        <a href="@routes.Search.search(None)">
+                            <span class="glyphicon glyphicon-search"></span>
+                            @Messages("basic.search")
+                        </a>
+                    </li>
+                    <li class="@activeLink("/scan*")">
+                        <a href="@routes.Search.barcode(None)">
+                            <span class="glyphicon glyphicon-barcode"></span>
+                            @Messages("basic.scan")
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@routes.Things.index()">
+                            <span class="glyphicon glyphicon-folder-open"></span>
+                            @Messages("basic.things")
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@routes.Labels.index()">
+                            <span class="glyphicon glyphicon-tags"></span>
+                            @Messages("basic.labels")
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            @Messages("basic.create") <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="@routes.Things.createForm(Some("atomic"))">
+                                    <span class="glyphicon glyphicon-hdd"></span>
+                                    @Messages("basic.atomic_thing")
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@routes.Things.createForm(Some("container"))">
+                                    <span class="glyphicon glyphicon-gift"></span>
+                                    @Messages("basic.container")
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@routes.Things.createForm(Some("functional_whole"))">
+                                    <span class="glyphicon glyphicon-cog"></span>
+                                    @Messages("basic.functional_whole")
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="@routes.Labels.createForm()">
+                                    <span class="glyphicon glyphicon-tag"></span>
+                                    @Messages("basic.label")
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
-                <li class="@activeLink("/search*")">
-                    <a href="@routes.Search.search(None)">
-                        <span class="glyphicon glyphicon-search"></span> @Messages("basic.search")
-                    </a>
-                </li>
-                <li class="@activeLink("/scan*")">
-                    <a href="@routes.Search.barcode(None)">
-                        <span class="glyphicon glyphicon-barcode"></span> @Messages("basic.scan")
-                    </a>
-                </li>
-                <li>
-                    <a href="@routes.Things.index()">
-                        <span class="glyphicon glyphicon-folder-open"></span> @Messages("basic.things")
-                    </a>
-                </li>
-                <li>
-                    <a href="@routes.Labels.index()">
-                        <span class="glyphicon glyphicon-tags"></span> @Messages("basic.labels")
-                    </a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <span class="glyphicon glyphicon-plus"></span> @Messages("basic.create") <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="@routes.Things.createForm(Some("atomic"))">
-                                <span class="glyphicon glyphicon-hdd"></span> @Messages("basic.atomic_thing")
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@routes.Things.createForm(Some("container"))">
-                                <span class="glyphicon glyphicon-gift"></span> @Messages("basic.container")
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@routes.Things.createForm(Some("functional_whole"))">
-                                <span class="glyphicon glyphicon-cog"></span> @Messages("basic.functional_whole")
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="@routes.Labels.createForm()">
-                                <span class="glyphicon glyphicon-tag"></span> @Messages("basic.label")
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+    </nav>
 
